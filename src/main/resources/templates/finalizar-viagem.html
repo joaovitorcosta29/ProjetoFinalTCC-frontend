@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Finalizar Viagem - Gestão de Frotas</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+</head>
+<body class="bg-light">
+
+    <!-- Navbar Reutilizável -->
+    <div th:replace="~{fragments/navbar :: navbar}"></div>
+
+    <div class="container my-5" style="max-width: 550px;">
+        <div class="card shadow-sm border-0 rounded-3">
+            <div class="card-header bg-primary text-white py-3">
+                <h5 class="mb-0 fw-bold">
+                    <i class="bi bi-check2-square me-2"></i>Finalizar Viagem
+                </h5>
+            </div>
+            <div class="card-body p-4">
+                
+                <form th:action="@{/viagens/finalizar}" method="post">
+                    <!-- ID da viagem oculto -->
+                    <input type="hidden" name="idViagem" th:value="${viagem.idViagem}" />
+
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold">Destino</label>
+                        <input type="text" class="form-control bg-light" th:value="${viagem.cidadeDestino + ' - ' + viagem.estadoDestino}" disabled />
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold">KM Inicial Registrado</label>
+                        <input type="text" class="form-control bg-light" th:value="${viagem.kmInicial}" disabled />
+                    </div>
+
+                    <!-- Input do KM Final -->
+                    <div class="mb-4">
+                        <label for="kmFinal" class="form-label fw-semibold">KM Final Registrado <span class="text-danger">*</span></label>
+                        <input type="number" 
+                               step="0.1" 
+                               class="form-control" 
+                               id="kmFinal" 
+                               name="kmFinal" 
+                               th:min="${viagem.kmInicial}"
+                               placeholder="Digite o odômetro final do veículo" 
+                               required />
+                        <div class="form-text">O valor digitado atualizará a quilometragem total do veículo.</div>
+                    </div>
+
+                    <div class="d-flex justify-content-between">
+                        <a href="javascript:history.back()" class="btn btn-outline-secondary">Cancelar</a>
+                        <button type="submit" class="btn btn-success fw-bold">Concluir Viagem</button>
+                    </div>
+                </form>
+
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
