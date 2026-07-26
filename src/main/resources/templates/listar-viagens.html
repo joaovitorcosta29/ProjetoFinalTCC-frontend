@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+    <head>
+        <meta charset="UTF-8">
+        <title>Lista de Viagens</title>
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+    </head>
+    <body class="bg-light">
+
+        <div th:replace="~{fragments/navbar :: navbar}"></div>
+
+        <div class="container my-4">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h2 class="fw-bold text-dark mb-0">Viagens Cadastradas</h2>
+
+                <a th:if="${session.usuario != null and (session.usuario.cargo.name() == 'GESTOR_FROTA' or session.usuario.cargo.name() == 'ADMIN')}" 
+                   th:href="@{/viagens/cadastrar}" 
+                   class="btn btn-primary shadow-sm">
+                    <i class="bi bi-plus-circle me-1"></i> Cadastrar nova viagem
+                </a>
+            </div>
+
+            <div class="card shadow-sm border-0 rounded-3">
+                <div class="card-body p-0">
+                    <div class="table-responsive">
+                        <table class="table table-hover align-middle mb-0">
+                            <thead class="table-light">
+                                <tr>
+                                    <th>ID Viagem</th>
+                                    <th>ID Usuário</th>
+                                    <th>ID Veículo</th>
+                                    <th>Cidade</th>
+                                    <th>UF</th>
+                                    <th>KM Inicial</th>
+                                    <th>KM Final</th>
+                                    <th>Status</th>
+                                    <th>Alerta Manutenção</th>
+                                    <th class="text-center">Ações</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr th:each="v : ${viagens}">
+                                    <td class="fw-bold" th:text="${v.idViagem != null ? '#' + v.idViagem : '-'}"></td>
+                                    <td th:text="${v.idUsuario != null ? v.idUsuario : 'Não atribuído'}"></td>
+                                    <td th:text="${v.idVeiculo}"></td>
+                                    <td th:text="${v.cidadeDestino}"></td>
+                                    <td th:text="${v.estadoDestino}"></td>
+                                    <td th:text="${v.kmInicial}"></td>
+                                    <td th:text="${v.kmFinal != null ? v.kmFinal : '-'}"></td>
+                                    <td>
+                                        <!-- Badges adaptadas para aceitar DISPONIVEL e EM_ANDAMENTO -->
+                                        <span th:if="${v.statusViagem != null and v.statusViagem.name() == 'FINALIZADA'}" class="badge bg-success">Finalizada</span>
+                                        <span th:if="${v.statusViagem != null and (v.statusViagem.name() == 'EM_ANDAMENTO' or v.statusViagem.name() == 'EM_VIAGEM' or v.statusViagem.name() == 'DISPONIVEL')}" class="badge bg-warning text-dark">Em Andamento</span>
+                                        <span th:if="${v.statusViagem == null or v.statusViagem.name() == 'REGISTRADA'}" class="badge bg-info text-dark">Registrada</span>
+                                    </td>
+                                    <td th:text="${v.alertaManutencao != null ? v.alertaManutencao : '-'}"></td>
+
+                                    <td class="text-center">
+                                        <!-- Exibe o botão de finalizar se NÃO estiver finalizada -->
+                                        <a th:if="${session.usuario != null and session.usuario.cargo.name() == 'MOTORISTA' and (v.statusViagem == null or v.statusViagem.name() != 'FINALIZADA')}" 
+                                           th:href="@{'/viagens/finalizar/' + ${v.idViagem}}" 
+                                           class="btn btn-sm btn-success shadow-sm">
+                                            <i class="bi bi-check-circle me-1"></i> Finalizar
+                                        </a>
+
+                                        <span th:if="${v.statusViagem != null and v.statusViagem.name() == 'FINALIZADA'}" class="text-muted small">
+                                            <i class="bi bi-check2-all text-success"></i> Concluída
+                                        </span>
+
+                                        <span th:if="${session.usuario != null and session.usuario.cargo.name() != 'MOTORISTA' and (v.statusViagem == null or v.statusViagem.name() != 'FINALIZADA')}" 
+                                              class="text-muted small">
+                                            Em aberto
+                                        </span>
+                                    </td>
+                                </tr>
+                                <tr th:if="${#lists.isEmpty(viagens)}">
+                                    <td colspan="10" class="text-center py-4 text-muted">
+                                        Nenhuma viagem encontrada.
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    </body>
+</html>
