@@ -7,12 +7,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 @Controller
 public class UsuarioController {
- 
+
     @Autowired
     private UsuarioService usuarioService;
 
@@ -59,6 +60,32 @@ public class UsuarioController {
         model.addAttribute("erroServidor", "E-mail ou senha inválidos.");
         return "login";
     }
+
+    // ==========================================
+    // MÉTODOS DE REGISTRO/CADASTRO (NOVOS)
+    // ==========================================
+
+    // 1. Exibe a tela de cadastro
+    @GetMapping("/registrar")
+    public String exibirFormularioRegistro(Model model) {
+        model.addAttribute("usuario", new UsuarioDTO());
+        return "registrar"; // Nome do template HTML (registrar.html)
+    }
+
+    // 2. Processa o envio dos dados do formulário de cadastro
+    @PostMapping("/registrar")
+    public String processarRegistro(@ModelAttribute("usuario") UsuarioDTO usuario, Model model) {
+        try {
+            usuarioService.registrar(usuario);
+            // Redireciona para o login informando sucesso na URL
+            return "redirect:/login?sucessoCadastro=true";
+        } catch (Exception e) {
+            model.addAttribute("erroServidor", e.getMessage());
+            return "registrar";
+        }
+    }
+
+    // ==========================================
 
     @GetMapping("/logout")
     public String logout(HttpSession session) {
