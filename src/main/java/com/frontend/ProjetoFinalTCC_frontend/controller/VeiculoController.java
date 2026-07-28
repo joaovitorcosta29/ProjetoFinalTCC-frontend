@@ -1,13 +1,15 @@
 package com.frontend.ProjetoFinalTCC_frontend.controller;
 
+import com.frontend.ProjetoFinalTCC_frontend.model.UsuarioDTO;
+import com.frontend.ProjetoFinalTCC_frontend.model.VeiculoDTO;
+import com.frontend.ProjetoFinalTCC_frontend.model.VeiculoDTO.StatusVeiculo;
 import com.frontend.ProjetoFinalTCC_frontend.service.VeiculoService;
-import com.projetofinalTCC.backendTCC.model.VeiculoDTO;
+import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 @Controller
 @RequestMapping("/veiculos")
@@ -16,27 +18,43 @@ public class VeiculoController {
     @Autowired
     private VeiculoService veiculoService;
 
-    @GetMapping("/tela-cadastro")
-    public String abrirTelaCadastro() {
+    @GetMapping("/cadastro")
+    public String abrirTelaCadastro(Model model, HttpSession session) {
+        UsuarioDTO usuarioLogado = (UsuarioDTO) session.getAttribute("usuario");
+
+        if (usuarioLogado == null) {
+            return "redirect:/login";
+        }
+
+        // Envia objeto para o formulário de cadastro, a lista para a tabela e os status para os selects
+        model.addAttribute("veiculo", new VeiculoDTO());
+        model.addAttribute("veiculos", veiculoService.listarTodos());
+        model.addAttribute("statuses", StatusVeiculo.values());
+
         return "veiculos";
     }
 
     @PostMapping("/cadastrar")
-    @ResponseBody
-    public ResponseEntity<String> cadastrar(@RequestBody VeiculoDTO veiculo) {
+    public String cadastrar(@ModelAttribute("veiculo") VeiculoDTO veiculo, RedirectAttributes redirect) {
         try {
             veiculoService.cadastrar(veiculo);
-            return ResponseEntity.ok("Veículo cadastrado com sucesso!");
+            redirect.addFlashAttribute("mensagemSucesso", "Veículo cadastrado com sucesso!");
         } catch (Exception e) {
-            return ResponseEntity.badRequest().body(e.getMessage());
+            redirect.addFlashAttribute("mensagemErro", "Erro ao cadastrar veículo: " + e.getMessage());
         }
+        return "redirect:/veiculos/tela-cadastro";
     }
 
-    @GetMapping("/listar")
-    @ResponseBody
-    public ResponseEntity<List<VeiculoDTO>> listar() {
-        List<VeiculoDTO> veiculos = veiculoService.listarTodos();
-        return ResponseEntity.ok(veiculos);
+    @PostMapping("/alterar-status")
+    public String alterarStatus(@RequestParam("idVeiculo") Long idVeiculo, 
+                                @RequestParam("status") StatusVeiculo status, 
+                                RedirectAttributes redirect) {
+        try {
+            veiculoService.alterarStatus(idVeiculo, status);
+            redirect.addFlashAttribute("mensagemSucesso", "Status atualizado com sucesso!");
+        } catch (Exception e) {
+            redirect.addFlashAttribute("mensagemErro", "Erro ao atualizar status: " + e.getMessage());
+        }
+        return "redirect:/veiculos/tela-cadastro";
     }
-    
 }

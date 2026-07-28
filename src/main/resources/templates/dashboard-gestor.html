@@ -6,34 +6,48 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
 </head>
 <body class="bg-light">
-    <nav class="navbar navbar-expand-lg navbar-dark bg-primary mb-4">
-        <div class="container">
-            <a class="navbar-brand fw-bold" href="#">Gestão de Frotas</a>
-            <span class="navbar-text text-white">
-                Gestor: <strong th:text="${usuario.nome}">Gestor</strong>
-            </span>
-            <a href="/logout" class="btn btn-outline-light btn-sm ms-auto">Sair</a>
-        </div>
-    </nav>
 
-    <div class="container">
+    <div th:replace="~{fragments/navbar :: navbar}"></div>
+
+    <div class="container py-2">
         <h3 class="mb-4">Painel Operacional da Frota</h3>
-        <div class="row g-3">
-            <div class="col-md-6">
-                <div class="card shadow-sm text-center p-3">
-                    <h5>Cadastrar Nova Viagem</h5>
-                    <p>Defina rotas, veículos e atribua motoristas.</p>
-                    <a href="/viagens/cadastrar" class="btn btn-primary">Nova Viagem</a>
+        
+        <div class="row g-4">
+            <!-- Card Gerenciar Veículos -->
+            <div class="col-md-4">
+                <div class="card shadow-sm text-center p-3 h-100">
+                    <h5>Gerenciar Veículos</h5>
+                    <p class="text-muted">Cadastre novos veículos e controle o status da frota.</p>
+                    <div class="mt-auto">
+                        <a th:href="@{/veiculos/cadastro}" class="btn btn-success w-100 fw-bold">Acessar Frota</a>
+                    </div>
                 </div>
             </div>
-            <div class="col-md-6">
-                <div class="card shadow-sm text-center p-3">
+
+            <!-- Card Cadastrar Nova Viagem -->
+            <div class="col-md-4">
+                <div class="card shadow-sm text-center p-3 h-100">
+                    <h5>Cadastrar Nova Viagem</h5>
+                    <p class="text-muted">Defina rotas, veículos e atribua motoristas.</p>
+                    <div class="mt-auto">
+                        <a th:href="@{/viagens/cadastrar}" class="btn btn-primary w-100 fw-bold">Nova Viagem</a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Card Viagens da Frota -->
+            <div class="col-md-4">
+                <div class="card shadow-sm text-center p-3 h-100">
                     <h5>Viagens da Frota</h5>
-                    <p>Acompanhe e gerencie as viagens ativas.</p>
-                    <a href="/viagens/listar" class="btn btn-outline-primary">Ver Viagens</a>
+                    <p class="text-muted">Acompanhe e gerencie as viagens ativas.</p>
+                    <div class="mt-auto">
+                        <a th:href="@{/viagens/listar}" class="btn btn-outline-primary w-100 fw-bold">Ver Viagens</a>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

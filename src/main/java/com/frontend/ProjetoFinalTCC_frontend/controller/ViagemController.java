@@ -1,10 +1,11 @@
 package com.frontend.ProjetoFinalTCC_frontend.controller;
 
 import com.frontend.ProjetoFinalTCC_frontend.model.UsuarioDTO;
+import com.frontend.ProjetoFinalTCC_frontend.model.VeiculoDTO;
+import com.frontend.ProjetoFinalTCC_frontend.model.VeiculoDTO.StatusVeiculo; // Import do Enum
 import com.frontend.ProjetoFinalTCC_frontend.model.ViagemDTO;
 import com.frontend.ProjetoFinalTCC_frontend.service.VeiculoService;
 import com.frontend.ProjetoFinalTCC_frontend.service.ViagemService;
-import com.projetofinalTCC.backendTCC.model.VeiculoDTO;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -37,8 +38,9 @@ public class ViagemController {
             return "redirect:/";
         }
 
+        // CORREÇÃO AQUI: Comparação direta com o Enum StatusVeiculo.DISPONIVEL
         List<VeiculoDTO> veiculosDisponiveis = veiculoService.listarTodos().stream()
-                .filter(v -> "DISPONIVEL".equalsIgnoreCase(v.getStatus()))
+                .filter(v -> v.getStatus() == StatusVeiculo.DISPONIVEL)
                 .toList();
 
         model.addAttribute("viagem", new ViagemDTO());
