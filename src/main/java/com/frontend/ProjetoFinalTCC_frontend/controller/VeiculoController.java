@@ -38,4 +38,5 @@ public class VeiculoController {
         List<VeiculoDTO> veiculos = veiculoService.listarTodos();
         return ResponseEntity.ok(veiculos);
     }
+    
 }

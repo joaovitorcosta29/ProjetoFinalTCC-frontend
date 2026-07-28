@@ -8,7 +8,7 @@ public class ApiService {
 
     private final RestTemplate restTemplate;
     
-    private final String BASE_URL = "http://localhost:8080"; 
+    private final String BASE_URL = "http://localhost:8081"; 
 
     public ApiService() {
         this.restTemplate = new RestTemplate();
