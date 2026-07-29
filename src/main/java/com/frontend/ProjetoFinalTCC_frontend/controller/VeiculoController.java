@@ -18,7 +18,21 @@ public class VeiculoController {
     @Autowired
     private VeiculoService veiculoService;
 
-    @GetMapping("/cadastro")
+    @GetMapping("/listar")
+    public String abrirTelaListagem(Model model, HttpSession session) {
+        UsuarioDTO usuarioLogado = (UsuarioDTO) session.getAttribute("usuario");
+
+        if (usuarioLogado == null) {
+            return "redirect:/login";
+        }
+
+        model.addAttribute("veiculos", veiculoService.listarTodos());
+        model.addAttribute("statuses", StatusVeiculo.values());
+
+        return "listar-veiculos";
+    }
+
+    @GetMapping("/cadastrar")
     public String abrirTelaCadastro(Model model, HttpSession session) {
         UsuarioDTO usuarioLogado = (UsuarioDTO) session.getAttribute("usuario");
 
@@ -26,23 +40,22 @@ public class VeiculoController {
             return "redirect:/login";
         }
 
-        // Envia objeto para o formulário de cadastro, a lista para a tabela e os status para os selects
         model.addAttribute("veiculo", new VeiculoDTO());
-        model.addAttribute("veiculos", veiculoService.listarTodos());
         model.addAttribute("statuses", StatusVeiculo.values());
 
-        return "veiculos";
+        return "cadastrar-veiculos";
     }
-
+    
     @PostMapping("/cadastrar")
     public String cadastrar(@ModelAttribute("veiculo") VeiculoDTO veiculo, RedirectAttributes redirect) {
         try {
             veiculoService.cadastrar(veiculo);
             redirect.addFlashAttribute("mensagemSucesso", "Veículo cadastrado com sucesso!");
+            return "redirect:/veiculos/listar";
         } catch (Exception e) {
             redirect.addFlashAttribute("mensagemErro", "Erro ao cadastrar veículo: " + e.getMessage());
+            return "redirect:/veiculos/cadastrar";
         }
-        return "redirect:/veiculos/tela-cadastro";
     }
 
     @PostMapping("/alterar-status")
@@ -55,6 +68,7 @@ public class VeiculoController {
         } catch (Exception e) {
             redirect.addFlashAttribute("mensagemErro", "Erro ao atualizar status: " + e.getMessage());
         }
-        return "redirect:/veiculos/tela-cadastro";
+        
+        return "redirect:/veiculos/listar"; 
     }
 }

@@ -38,7 +38,6 @@ public class ViagemController {
             return "redirect:/";
         }
 
-        // CORREÇÃO AQUI: Comparação direta com o Enum StatusVeiculo.DISPONIVEL
         List<VeiculoDTO> veiculosDisponiveis = veiculoService.listarTodos().stream()
                 .filter(v -> v.getStatus() == StatusVeiculo.DISPONIVEL)
                 .toList();

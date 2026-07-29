@@ -61,31 +61,22 @@ public class UsuarioController {
         return "login";
     }
 
-    // ==========================================
-    // MÉTODOS DE REGISTRO/CADASTRO (NOVOS)
-    // ==========================================
-
-    // 1. Exibe a tela de cadastro
     @GetMapping("/registrar")
     public String exibirFormularioRegistro(Model model) {
         model.addAttribute("usuario", new UsuarioDTO());
-        return "registrar"; // Nome do template HTML (registrar.html)
+        return "registrar";
     }
 
-    // 2. Processa o envio dos dados do formulário de cadastro
     @PostMapping("/registrar")
     public String processarRegistro(@ModelAttribute("usuario") UsuarioDTO usuario, Model model) {
         try {
             usuarioService.registrar(usuario);
-            // Redireciona para o login informando sucesso na URL
             return "redirect:/login?sucessoCadastro=true";
         } catch (Exception e) {
             model.addAttribute("erroServidor", e.getMessage());
             return "registrar";
         }
     }
-
-    // ==========================================
 
     @GetMapping("/logout")
     public String logout(HttpSession session) {
