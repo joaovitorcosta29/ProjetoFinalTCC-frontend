@@ -36,6 +36,7 @@
                                     <th>KM Final</th>
                                     <th>Status</th>
                                     <th>Alerta Manutenção</th>
+                                    <th class="text-center">Ações</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -48,15 +49,21 @@
                                     <td th:text="${v.kmInicial}"></td>
                                     <td th:text="${v.kmFinal != null ? v.kmFinal : '-'}"></td>
                                     <td>
-                                        <!-- Badges adaptadas para aceitar DISPONIVEL e EM_ANDAMENTO -->
-                                        <span th:if="${v.statusViagem != null and v.statusViagem.name() == 'FINALIZADA'}" class="badge bg-success">Finalizada</span>
-                                        <span th:if="${v.statusViagem != null and (v.statusViagem.name() == 'EM_ANDAMENTO' or v.statusViagem.name() == 'EM_VIAGEM' or v.statusViagem.name() == 'DISPONIVEL')}" class="badge bg-warning text-dark">Em Andamento</span>
-                                        <span th:if="${v.statusViagem == null or v.statusViagem.name() == 'REGISTRADA'}" class="badge bg-info text-dark">Registrada</span>
+                                        <span th:if="${v.statusViagem != null and v.statusViagem.name() == 'DISPONIVEL'}" 
+                                              class="badge bg-info text-dark">Disponível</span>
+
+                                        <span th:if="${v.statusViagem != null and (v.statusViagem.name() == 'EM_ANDAMENTO' or v.statusViagem.name() == 'EM_VIAGEM')}" 
+                                              class="badge bg-warning text-dark">Em Andamento</span>
+
+                                        <span th:if="${v.statusViagem != null and v.statusViagem.name() == 'FINALIZADA'}" 
+                                              class="badge bg-success">Finalizada</span>
+
+                                        <span th:if="${v.statusViagem == null or v.statusViagem.name() == 'REGISTRADA'}" 
+                                              class="badge bg-secondary">Registrada</span>
                                     </td>
                                     <td th:text="${v.alertaManutencao != null ? v.alertaManutencao : '-'}"></td>
 
                                     <td class="text-center">
-                                        <!-- Exibe o botão de finalizar se NÃO estiver finalizada -->
                                         <a th:if="${session.usuario != null and session.usuario.cargo.name() == 'MOTORISTA' and (v.statusViagem == null or v.statusViagem.name() != 'FINALIZADA')}" 
                                            th:href="@{'/viagens/finalizar/' + ${v.idViagem}}" 
                                            class="btn btn-sm btn-success shadow-sm">

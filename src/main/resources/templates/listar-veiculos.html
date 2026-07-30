@@ -12,22 +12,19 @@
         
         <div class="container my-4">
             <div class="d-flex justify-content-between align-items-center mb-4">
-                <h2 class="fw-bold text-dark mb-0">Veiculos Cadastrados</h2>
-                <div>
-                    <a th:if="${session.usuario != null and (session.usuario.cargo.name() == 'GESTOR_FROTA' or session.usuario.cargo.name() == 'ADMIN')}" 
-                       th:href="@{/veiculos/cadastrar}" 
-                       class="btn btn-primary shadow-sm">
-                        <i class="bi bi-plus-circle me-1"></i> Cadastrar Veiculo
+                <h2 class="fw-bold text-dark mb-0">Veículos Cadastrados</h2>
+                
+                <!-- Botões agrupados lado a lado -->
+                <div class="d-flex gap-2" th:if="${session.usuario != null and (session.usuario.cargo.name() == 'GESTOR_FROTA' or session.usuario.cargo.name() == 'ADMIN')}">
+                    <a th:href="@{/veiculos/cadastrar}" class="btn btn-primary shadow-sm">
+                        <i class="bi bi-plus-circle me-1"></i> Cadastrar Veículo
                     </a>
-                </div>
-                <div>
-                    <a th:if="${session.usuario != null and (session.usuario.cargo.name() == 'GESTOR_FROTA' or session.usuario.cargo.name() == 'ADMIN')}" 
-                       th:href="@{/veiculos/editar}" 
-                       class="btn btn-primary shadow-sm">
-                        <i class="bi bi-plus-circle me-1"></i> Editar Veiculo
+                    <a th:href="@{/veiculos/editar}" class="btn btn-outline-primary shadow-sm">
+                        <i class="bi bi-pencil-square me-1"></i> Editar Veículo
                     </a>
                 </div>
             </div>
+
             <div class="card shadow-sm">
                 <div class="card-body p-0">
                     <div class="table-responsive">
