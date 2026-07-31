@@ -19,10 +19,11 @@
                     <h5>Gerenciar Veículos</h5>
                     <p class="text-muted">Cadastre novos veículos e controle o status da frota.</p>
                     <div class="mt-auto">
-                        <a th:href="@{/veiculos/listar}" class="btn btn-primary w-100 fw-bold">Acessar Frota</a>
+                        <a th:href="@{/veiculos/listar}" class="btn btn-outline-primary w-100 fw-bold">Acessar Frota</a>
                     </div>
                 </div>
             </div>
+            
             <!-- Card Viagens da Frota -->
             <div class="col-md-4">
                 <div class="card shadow-sm text-center p-3 h-100">
@@ -30,6 +31,17 @@
                     <p class="text-muted">Acompanhe e gerencie as viagens ativas.</p>
                     <div class="mt-auto">
                         <a th:href="@{/viagens/listar}" class="btn btn-outline-primary w-100 fw-bold">Ver Viagens</a>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Card Manutencao -->
+            <div class="col-md-4">
+                <div class="card shadow-sm text-center p-3 h-100">
+                    <h5>Gerenciar Manutenções</h5>
+                    <p class="text-muted">Acompanhar a lista de manutenções.</p>
+                    <div class="mt-auto">
+                        <a th:href="@{/manutencoes/listar}" class="btn btn-outline-primary w-100 fw-bold">Ver Manutenções</a>
                     </div>
                 </div>
             </div>

@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+    <head>
+        <meta charset="UTF-8">
+        <title>Gestão de Manutenções</title>
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+    </head>
+    <body class="bg-light">
+        
+        <div th:replace="~{fragments/navbar :: navbar}"></div>
+        
+        <div class="container my-4">
+            <div th:if="${mensagemSucesso}" class="alert alert-success alert-dismissible fade show shadow-sm" role="alert">
+                <i class="bi bi-check-circle-fill me-2"></i><span th:text="${mensagemSucesso}"></span>
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+            
+            <div th:if="${mensagemErro}" class="alert alert-danger alert-dismissible fade show shadow-sm" role="alert">
+                <i class="bi bi-exclamation-triangle-fill me-2"></i><span th:text="${mensagemErro}"></span>
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h2 class="fw-bold text-dark mb-0">Manutenções Registradas</h2>
+                
+                <div class="d-flex gap-2" th:if="${session.usuario != null and (session.usuario.cargo.name() == 'GESTOR_FROTA' or session.usuario.cargo.name() == 'ADMIN' or session.usuario.cargo.name() == 'MECANICO')}">
+                    <a th:href="@{/manutencoes/cadastrar}" class="btn btn-primary shadow-sm">
+                        <i class="bi bi-plus-circle me-1"></i> Registrar Manutenção
+                    </a>
+                </div>
+            </div>
+
+            <!-- Card com a Tabela -->
+            <div class="card shadow-sm">
+                <div class="card-body p-0">
+                    <div class="table-responsive">
+                        <table class="table table-hover align-middle mb-0">
+                            <thead class="table-light">
+                                <tr>
+                                    <th>ID</th>
+                                    <th>ID Veículo</th>
+                                    <th>Descrição</th>
+                                    <th>Status Atual</th>
+                                    <th>Alterar Status</th>
+                                    <th class="text-end pe-3" th:if="${session.usuario != null and (session.usuario.cargo.name() == 'GESTOR_FROTA' or session.usuario.cargo.name() == 'ADMIN')}">Ações</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr th:each="m : ${manutencoes}">
+                                    <td th:text="${m.idManutencao}">1</td>
+                                    <td><strong th:text="${'#' + m.idVeiculo}">#101</strong></td>
+                                    <td th:text="${m.descricao}">Troca de óleo e filtros</td>
+                                    <td>
+                                        <span th:if="${m.statusManutencao.name() == 'PENDENTE'}" class="badge bg-secondary">PENDENTE</span>
+                                        <span th:if="${m.statusManutencao.name() == 'EM_ANDAMENTO'}" class="badge bg-warning text-dark">EM ANDAMENTO</span>
+                                        <span th:if="${m.statusManutencao.name() == 'CONCLUIDA'}" class="badge bg-success">CONCLUÍDA</span>
+                                        <span th:if="${m.statusManutencao.name() == 'CANCELADA'}" class="badge bg-danger">CANCELADA</span>
+                                    </td>
+                                    <td>
+                                        <form th:action="@{/manutencoes/alterar-status}" method="post" class="d-flex align-items-center gap-2">
+                                            <input type="hidden" name="idManutencao" th:value="${m.idManutencao}">
+                                            <select name="novoStatus" class="form-select form-select-sm w-auto" required>
+                                                <option value="" disabled selected>Mudar para...</option>
+                                                <option th:each="st : ${statusOptions}" 
+                                                        th:value="${st}" 
+                                                        th:text="${st}"
+                                                        th:disabled="${st == m.statusManutencao}"></option>
+                                            </select>
+                                            <button type="submit" class="btn btn-sm btn-outline-primary">Alterar</button>
+                                        </form>
+                                    </td>
+                                    <td class="text-end pe-3" th:if="${session.usuario != null and (session.usuario.cargo.name() == 'GESTOR_FROTA' or session.usuario.cargo.name() == 'ADMIN')}">
+                                        <a th:href="@{/manutencoes/editar/{id}(id=${m.idManutencao})}" class="btn btn-sm btn-outline-secondary me-1" title="Editar">
+                                            <i class="bi bi-pencil-square"></i>
+                                        </a>
+                                        <a th:href="@{/manutencoes/deletar/{id}(id=${m.idManutencao})}" 
+                                           class="btn btn-sm btn-outline-danger" 
+                                           title="Deletar"
+                                           onclick="return confirm('Tem certeza que deseja excluir esta manutenção?');">
+                                            <i class="bi bi-trash"></i>
+                                        </a>
+                                    </td>
+                                </tr>
+                                <tr th:if="${#lists.isEmpty(manutencoes)}">
+                                    <td colspan="6" class="text-center py-4 text-muted">
+                                        Nenhuma manutenção registrada no sistema.
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    </body>
+</html>
