@@ -6,52 +6,56 @@ import java.util.Arrays;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestClient;
 
 @Service
 public class ManutencaoService {
 
-    @Autowired
-    private ApiService apiService;
+    private final RestClient restClient;
 
-    private String getEndpoint() {
-        return apiService.getBaseUrl() + "/api/manutencoes";
+    @Autowired
+    public ManutencaoService(ApiService apiService) {
+        this.restClient = RestClient.builder()
+                .baseUrl(apiService.getBaseUrl())
+                .build();
     }
 
     public String salvar(ManutencaoDTO manutencao) {
         try {
             if (manutencao.getIdManutencao() != null && manutencao.getIdManutencao() > 0) {
-                apiService.getRestTemplate().put(
-                        getEndpoint() + "/" + manutencao.getIdManutencao(),
-                        manutencao
-                );
-                return "Manutenção salva com sucesso!";
+                restClient.put()
+                        .uri("/api/manutencoes/{id}", manutencao.getIdManutencao())
+                        .body(manutencao)
+                        .retrieve()
+                        .toBodilessEntity();
             } else {
                 manutencao.setStatusManutencao(StatusManutencao.PENDENTE);
-                apiService.getRestTemplate().postForObject(
-                        getEndpoint(),
-                        manutencao,
-                        String.class
-                );
-                return "Manutenção salva com sucesso!";
+                restClient.post()
+                        .uri("/api/manutencoes")
+                        .body(manutencao)
+                        .retrieve()
+                        .toBodilessEntity();
             }
+            return "Manutenção salva com sucesso!";
         } catch (Exception e) {
             throw new RuntimeException("Erro ao comunicar com o backend: " + e.getMessage());
         }
     }
 
     public List<ManutencaoDTO> listarTodas() {
-        ManutencaoDTO[] lista = apiService.getRestTemplate().getForObject(
-                getEndpoint(),
-                ManutencaoDTO[].class
-        );
+        ManutencaoDTO[] lista = restClient.get()
+                .uri("/api/manutencoes")
+                .retrieve()
+                .body(ManutencaoDTO[].class);
+
         return lista != null ? Arrays.asList(lista) : List.of();
     }
 
     public ManutencaoDTO buscarPorId(Integer id) {
-        return apiService.getRestTemplate().getForObject(
-                getEndpoint() + "/" + id,
-                ManutencaoDTO.class
-        );
+        return restClient.get()
+                .uri("/api/manutencoes/{id}", id)
+                .retrieve()
+                .body(ManutencaoDTO.class);
     }
 
     public void alterarStatus(Integer idManutencao, StatusManutencao novoStatus) {
@@ -64,7 +68,10 @@ public class ManutencaoService {
 
     public String deletar(Integer id) {
         try {
-            apiService.getRestTemplate().delete(getEndpoint() + "/" + id);
+            restClient.delete()
+                    .uri("/api/manutencoes/{id}", id)
+                    .retrieve()
+                    .toBodilessEntity();
             return "Manutenção excluída com sucesso!";
         } catch (Exception e) {
             throw new RuntimeException("Erro ao deletar manutenção.");

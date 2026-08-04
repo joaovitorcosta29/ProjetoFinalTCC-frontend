@@ -1,34 +1,40 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package com.frontend.ProjetoFinalTCC_frontend.service;
 
 import com.frontend.ProjetoFinalTCC_frontend.model.FinalizarViagemDTO;
 import com.frontend.ProjetoFinalTCC_frontend.model.ViagemDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
 import java.util.Arrays;
 import java.util.List;
+import org.springframework.web.client.RestClient;
 
-/**
- *
- * @author joaov
- */
 @Service
 public class ViagemService {
 
+    private final RestClient restClient;
+
     @Autowired
-    private ApiService apiService;
+    public ViagemService(ApiService apiService) {
+        this.restClient = RestClient.builder()
+                .baseUrl(apiService.getBaseUrl())
+                .build();
+    }
 
     public String registrar(ViagemDTO viagemDTO) {
-        String url = apiService.getBaseUrl() + "/viagens/registrar";
-        return apiService.getRestTemplate().postForObject(url, viagemDTO, String.class);
+        return restClient.post()
+                .uri("/viagens/registrar")
+                .body(viagemDTO)
+                .retrieve()
+                .body(String.class);
     }
 
     public List<ViagemDTO> listarTodas() {
-        String url = apiService.getBaseUrl() + "/viagens/listar";
-        ViagemDTO[] viagens = apiService.getRestTemplate().getForObject(url, ViagemDTO[].class);
+        ViagemDTO[] viagens = restClient.get()
+                .uri("/viagens/listar")
+                .retrieve()
+                .body(ViagemDTO[].class);
+
         return viagens != null ? Arrays.asList(viagens) : List.of();
     }
 
@@ -49,10 +55,14 @@ public class ViagemService {
 
     public boolean finalizarViagem(Long idViagem, Double kmFinal) {
         try {
-            String url = apiService.getBaseUrl() + "/viagens/finalizar";
             FinalizarViagemDTO dto = new FinalizarViagemDTO(idViagem, kmFinal);
-            
-            apiService.getRestTemplate().postForEntity(url, dto, Void.class);
+
+            restClient.post()
+                    .uri("/viagens/finalizar")
+                    .body(dto)
+                    .retrieve()
+                    .toBodilessEntity();
+
             return true;
         } catch (Exception e) {
             e.printStackTrace();

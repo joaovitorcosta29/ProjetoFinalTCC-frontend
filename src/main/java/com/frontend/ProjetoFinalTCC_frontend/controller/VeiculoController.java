@@ -27,8 +27,6 @@ public class VeiculoController {
         }
 
         model.addAttribute("veiculos", veiculoService.listarTodos());
-        model.addAttribute("statuses", StatusVeiculo.values());
-
         return "listar-veiculos";
     }
 
@@ -58,15 +56,39 @@ public class VeiculoController {
         }
     }
 
-    @PostMapping("/alterar-status")
-    public String alterarStatus(@RequestParam("idVeiculo") Long idVeiculo,
-                                @RequestParam("status") StatusVeiculo status,
-                                RedirectAttributes redirect) {
+    @GetMapping("/editar/{id}")
+    public String editarVeiculo(@PathVariable("id") Long id, Model model, HttpSession session, RedirectAttributes redirectAttributes) {
+        UsuarioDTO usuarioLogado = (UsuarioDTO) session.getAttribute("usuario");
+
+        if (usuarioLogado == null) {
+            return "redirect:/login";
+        }
+
         try {
-            veiculoService.alterarStatus(idVeiculo, status);
-            redirect.addFlashAttribute("mensagemSucesso", "Status atualizado com sucesso!");
+            VeiculoDTO veiculo = veiculoService.buscarPorId(id);
+
+            if (veiculo == null) {
+                redirectAttributes.addFlashAttribute("mensagemErro", "Veículo não encontrado.");
+                return "redirect:/veiculos/listar";
+            }
+
+            model.addAttribute("veiculo", veiculo);
+            model.addAttribute("statusOptions", StatusVeiculo.values());
+
+            return "editar-veiculos";
         } catch (Exception e) {
-            redirect.addFlashAttribute("mensagemErro", "Erro ao atualizar status: " + e.getMessage());
+            redirectAttributes.addFlashAttribute("mensagemErro", "Erro ao carregar veículo para edição: " + e.getMessage());
+            return "redirect:/veiculos/listar";
+        }
+    }
+
+    @PostMapping("/atualizar")
+    public String atualizar(@ModelAttribute("veiculo") VeiculoDTO veiculo, RedirectAttributes redirect) {
+        try {
+            veiculoService.editarVeiculo(veiculo);
+            redirect.addFlashAttribute("mensagemSucesso", "Veículo atualizado com sucesso!");
+        } catch (Exception e) {
+            redirect.addFlashAttribute("mensagemErro", "Erro ao atualizar veículo: " + e.getMessage());
         }
 
         return "redirect:/veiculos/listar";

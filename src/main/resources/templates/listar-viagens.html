@@ -50,16 +50,13 @@
                                     <td th:text="${v.kmFinal != null ? v.kmFinal : '-'}"></td>
                                     <td>
                                         <span th:if="${v.statusViagem != null and v.statusViagem.name() == 'DISPONIVEL'}" 
-                                              class="badge bg-info text-dark">Disponível</span>
+                                              class="badge bg-success">DISPONÍVEL</span>
 
                                         <span th:if="${v.statusViagem != null and (v.statusViagem.name() == 'EM_ANDAMENTO' or v.statusViagem.name() == 'EM_VIAGEM')}" 
-                                              class="badge bg-warning text-dark">Em Andamento</span>
+                                              class="badge bg-warning text-dark">EM ANDAMENTO</span>
 
                                         <span th:if="${v.statusViagem != null and v.statusViagem.name() == 'FINALIZADA'}" 
-                                              class="badge bg-success">Finalizada</span>
-
-                                        <span th:if="${v.statusViagem == null or v.statusViagem.name() == 'REGISTRADA'}" 
-                                              class="badge bg-secondary">Registrada</span>
+                                              class="badge bg-secondary">FINALIZADA</span>
                                     </td>
                                     <td th:text="${v.alertaManutencao != null ? v.alertaManutencao : '-'}"></td>
 

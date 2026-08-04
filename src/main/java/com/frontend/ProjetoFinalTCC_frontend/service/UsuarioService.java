@@ -2,36 +2,40 @@ package com.frontend.ProjetoFinalTCC_frontend.service;
 
 import com.frontend.ProjetoFinalTCC_frontend.model.UsuarioDTO;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestClient;
 
 @Service
 public class UsuarioService {
 
+    private final RestClient restClient;
+
     @Autowired
-    private ApiService apiService;
+    public UsuarioService(ApiService apiService) {
+        this.restClient = RestClient.builder()
+                .baseUrl(apiService.getBaseUrl())
+                .build();
+    }
 
     public void registrar(UsuarioDTO usuario) {
         usuario.setCargo(UsuarioDTO.Cargo.MOTORISTA);
 
-        String url = apiService.getBaseUrl() + "/usuarios/registrar";
-        
-        ResponseEntity<String> response = apiService.getRestTemplate().postForEntity(url, usuario, String.class);
-        
-        if (!response.getStatusCode().is2xxSuccessful()) {
-            throw new RuntimeException("Erro ao cadastrar no banco de dados.");
-        }
+        restClient.post()
+                .uri("/usuarios/registrar")
+                .body(usuario)
+                .retrieve()
+                .toBodilessEntity();
     }
 
     public UsuarioDTO logar(UsuarioDTO loginDados) {
-        String url = apiService.getBaseUrl() + "/usuarios/login";
-        
-        ResponseEntity<UsuarioDTO> response = apiService.getRestTemplate().postForEntity(url, loginDados, UsuarioDTO.class);
-        
-        if (response.getStatusCode().is2xxSuccessful() && response.getBody() != null) {
-            return response.getBody();
-        } else {
-            throw new RuntimeException("E-mail ou senha inválidos.");
+        try {
+            return restClient.post()
+                    .uri("/usuarios/login")
+                    .body(loginDados)
+                    .retrieve()
+                    .body(UsuarioDTO.class);
+        } catch (Exception e) {
+            throw new RuntimeException("E-mail ou senha inválidos.", e);
         }
     }
 

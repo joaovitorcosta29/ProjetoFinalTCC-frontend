@@ -62,10 +62,10 @@
                                         <span th:if="${v.status.name() == 'MANUTENCAO'}" class="badge bg-danger">MANUTENÇÃO</span>
                                         <span th:if="${v.status.name() == 'DESATIVADO'}" class="badge bg-secondary">DESATIVADO</span>
                                     </td>
-                                    <!-- Botão de Editar Cinza -->
+                                    <!-- Botão de Editar-->
                                     <td class="text-center" th:if="${session.usuario != null and (session.usuario.cargo.name() == 'GESTOR_FROTA' or session.usuario.cargo.name() == 'ADMIN')}">
                                         <a th:href="@{/veiculos/editar/{id}(id=${v.idVeiculo})}" class="btn btn-sm btn-outline-secondary" title="Editar Veículo">
-                                            <i class="bi bi-pencil-square"></i>
+                                            <i class="bi bi-pencil-square">Editar</i>
                                         </a>
                                     </td>
                                 </tr>

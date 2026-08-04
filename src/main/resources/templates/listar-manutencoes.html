@@ -72,7 +72,7 @@
                                     </td>
                                     <td class="text-end pe-3" th:if="${session.usuario != null and (session.usuario.cargo.name() == 'GESTOR_FROTA' or session.usuario.cargo.name() == 'ADMIN')}">
                                         <a th:href="@{/manutencoes/editar/{id}(id=${m.idManutencao})}" class="btn btn-sm btn-outline-secondary me-1" title="Editar">
-                                            <i class="bi bi-pencil-square"></i>
+                                            <i class="bi bi-pencil-square">Editar</i>
                                         </a>
                                         <a th:href="@{/manutencoes/deletar/{id}(id=${m.idManutencao})}" 
                                            class="btn btn-sm btn-outline-danger" 
