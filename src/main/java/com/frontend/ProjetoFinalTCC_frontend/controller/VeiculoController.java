@@ -45,7 +45,7 @@ public class VeiculoController {
 
         return "cadastrar-veiculos";
     }
-    
+
     @PostMapping("/cadastrar")
     public String cadastrar(@ModelAttribute("veiculo") VeiculoDTO veiculo, RedirectAttributes redirect) {
         try {
@@ -59,8 +59,8 @@ public class VeiculoController {
     }
 
     @PostMapping("/alterar-status")
-    public String alterarStatus(@RequestParam("idVeiculo") Long idVeiculo, 
-                                @RequestParam("status") StatusVeiculo status, 
+    public String alterarStatus(@RequestParam("idVeiculo") Long idVeiculo,
+                                @RequestParam("status") StatusVeiculo status,
                                 RedirectAttributes redirect) {
         try {
             veiculoService.alterarStatus(idVeiculo, status);
@@ -68,7 +68,7 @@ public class VeiculoController {
         } catch (Exception e) {
             redirect.addFlashAttribute("mensagemErro", "Erro ao atualizar status: " + e.getMessage());
         }
-        
-        return "redirect:/veiculos/listar"; 
+
+        return "redirect:/veiculos/listar";
     }
 }

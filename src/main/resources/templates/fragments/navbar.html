@@ -4,7 +4,7 @@
 
     <nav th:fragment="navbar" class="navbar navbar-expand-lg navbar-dark bg-primary shadow-sm mb-4">
         <div class="container">
-            <a class="navbar-brand fw-bold" th:href="@{/}">Gestão de Frota</a>
+            <a class="navbar-brand fw-bold" th:href="@{/}">Gestão de Frota de Ônibus</a>
             <div class="d-flex align-items-center">
                 <span class="text-white me-3" 
                       th:text="${session.usuario != null} ? 'Olá, ' + ${session.usuario.nome} : 'Olá, Usuário'">
