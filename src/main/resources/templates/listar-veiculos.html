@@ -12,6 +12,19 @@
         
         <div class="container my-4">
             
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <div>
+                    <h2 class="fw-bold text-dark mb-0">Veículos Cadastrados</h2>
+                </div>
+                
+                <!-- Botão de Cadastro -->
+                <div th:if="${session.usuario != null and (session.usuario.cargo.name() == 'GESTOR_FROTA' or session.usuario.cargo.name() == 'ADMIN')}">
+                    <a th:href="@{/veiculos/cadastrar}" class="btn btn-primary shadow-sm">
+                        <i class="bi bi-plus-circle me-1"></i> Cadastrar Veículo
+                    </a>
+                </div>
+            </div>
+
             <!-- Mensagens de Alerta -->
             <div th:if="${mensagemSucesso}" class="alert alert-success alert-dismissible fade show shadow-sm" role="alert">
                 <i class="bi bi-check-circle-fill me-2"></i><span th:text="${mensagemSucesso}"></span>
@@ -23,18 +36,12 @@
                 <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
             </div>
 
-            <div class="d-flex justify-content-between align-items-center mb-4">
-                <h2 class="fw-bold text-dark mb-0">Veículos Cadastrados</h2>
-                
-                <!-- Botão de Cadastro -->
-                <div th:if="${session.usuario != null and (session.usuario.cargo.name() == 'GESTOR_FROTA' or session.usuario.cargo.name() == 'ADMIN')}">
-                    <a th:href="@{/veiculos/cadastrar}" class="btn btn-primary shadow-sm">
-                        <i class="bi bi-plus-circle me-1"></i> Cadastrar Veículo
-                    </a>
+            <div class="card shadow-sm border-0 rounded-3">
+                <div class="card-header bg-primary text-white d-flex align-items-center">
+                    <i class="bi bi-truck-front me-2"></i>
+                    <span class="fw-semibold">Veículos</span>
+                    <span class="badge bg-white text-primary ms-2" th:text="${#lists.size(veiculos)}">0</span>
                 </div>
-            </div>
-
-            <div class="card shadow-sm">
                 <div class="card-body p-0">
                     <div class="table-responsive">
                         <table class="table table-hover align-middle mb-0">
@@ -46,7 +53,7 @@
                                     <th>Ano</th>
                                     <th>KM Atual</th>
                                     <th>Status Atual</th>
-                                    <th class="text-center" th:if="${session.usuario != null and (session.usuario.cargo.name() == 'GESTOR_FROTA' or session.usuario.cargo.name() == 'ADMIN')}">Ações</th>
+                                    <th class="text-center" th:if="${session.usuario != null and (session.usuario.cargo.name() == 'GESTOR_FROTA' or session.usuario.cargo.name() == 'ADMIN')}">Editar</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -64,8 +71,8 @@
                                     </td>
                                     <!-- Botão de Editar-->
                                     <td class="text-center" th:if="${session.usuario != null and (session.usuario.cargo.name() == 'GESTOR_FROTA' or session.usuario.cargo.name() == 'ADMIN')}">
-                                        <a th:href="@{/veiculos/editar/{id}(id=${v.idVeiculo})}" class="btn btn-sm btn-outline-secondary" title="Editar Veículo">
-                                            <i class="bi bi-pencil-square">Editar</i>
+                                        <a th:href="@{/veiculos/editar/{id}(id=${v.idVeiculo})}" class="btn btn-sm btn-outline-primary shadow-sm" title="Editar Veículo">
+                                            <i class="bi bi-pencil-square-me-1">Editar</i>
                                         </a>
                                     </td>
                                 </tr>

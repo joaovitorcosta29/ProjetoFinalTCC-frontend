@@ -12,7 +12,9 @@
 
         <div class="container my-4">
             <div class="d-flex justify-content-between align-items-center mb-4">
-                <h2 class="fw-bold text-dark mb-0">Viagens Cadastradas</h2>
+                <div>
+                    <h2 class="fw-bold text-dark mb-0">Viagens Cadastradas</h2>
+                </div>
 
                 <a th:if="${session.usuario != null and (session.usuario.cargo.name() == 'GESTOR_FROTA' or session.usuario.cargo.name() == 'ADMIN')}" 
                    th:href="@{/viagens/cadastrar}" 
@@ -21,7 +23,24 @@
                 </a>
             </div>
 
+            <!-- Alerta de Sucesso -->
+            <div th:if="${mensagemSucesso}" class="alert alert-success alert-dismissible fade show" role="alert">
+                <i class="bi bi-check-circle-fill me-2"></i><span th:text="${mensagemSucesso}"></span>
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+
+            <!-- Alerta de Erro -->
+            <div th:if="${mensagemErro}" class="alert alert-danger alert-dismissible fade show" role="alert">
+                <i class="bi bi-exclamation-triangle-fill me-2"></i><span th:text="${mensagemErro}"></span>
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+
             <div class="card shadow-sm border-0 rounded-3">
+                <div class="card-header bg-primary text-white d-flex align-items-center">
+                    <i class="bi bi-signpost-2 me-2"></i>
+                    <span class="fw-semibold">Viagens</span>
+                    <span class="badge bg-white text-primary ms-2" th:text="${#lists.size(viagens)}">0</span>
+                </div>
                 <div class="card-body p-0">
                     <div class="table-responsive">
                         <table class="table table-hover align-middle mb-0">
@@ -36,7 +55,7 @@
                                     <th>KM Final</th>
                                     <th>Status</th>
                                     <th>Alerta Manutenção</th>
-                                    <th class="text-center">Ações</th>
+                                    <th class="text-center">Editar</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -61,20 +80,10 @@
                                     <td th:text="${v.alertaManutencao != null ? v.alertaManutencao : '-'}"></td>
 
                                     <td class="text-center">
-                                        <a th:if="${session.usuario != null and session.usuario.cargo.name() == 'MOTORISTA' and (v.statusViagem == null or v.statusViagem.name() != 'FINALIZADA')}" 
-                                           th:href="@{'/viagens/finalizar/' + ${v.idViagem}}" 
-                                           class="btn btn-sm btn-success shadow-sm">
-                                            <i class="bi bi-check-circle me-1"></i> Finalizar
-                                        </a>
-
-                                        <span th:if="${v.statusViagem != null and v.statusViagem.name() == 'FINALIZADA'}" class="text-muted small">
-                                            <i class="bi bi-check2-all text-success"></i> Concluída
-                                        </span>
-
-                                        <span th:if="${session.usuario != null and session.usuario.cargo.name() != 'MOTORISTA' and (v.statusViagem == null or v.statusViagem.name() != 'FINALIZADA')}" 
-                                              class="text-muted small">
-                                            Em aberto
-                                        </span>
+                                        <a th:href="@{'/viagens/editar/' + ${v.idViagem}}"
+                                           class="btn btn-sm btn-outline-primary shadow-sm">
+                                            <i class="bi bi-pencil-square me-1"></i> Editar
+                                        </a>                                     
                                     </td>
                                 </tr>
                                 <tr th:if="${#lists.isEmpty(viagens)}">

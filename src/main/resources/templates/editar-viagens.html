@@ -1,15 +1,122 @@
 <!DOCTYPE html>
-<!--
-Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
-Click nbfs://nbhost/SystemFileSystem/Templates/Other/html.html to edit this template
--->
-<html>
-    <head>
-        <title>TODO supply a title</title>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    </head>
-    <body>
-        <div>TODO write content</div>
-    </body>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Editar Viagem</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+</head>
+<body class="bg-light">
+
+    <div th:replace="~{fragments/navbar :: navbar}"></div>
+
+    <div class="container my-5" style="max-width: 650px;">
+        <div class="card shadow-sm">
+            <div class="card-header bg-primary text-white d-flex align-items-center justify-content-between">
+                <h4 class="mb-0 fs-5"><i class="bi bi-pencil-square me-2"></i>Editar Viagem</h4>
+                <a th:href="@{/viagens/listar}" class="btn btn-sm btn-outline-light">
+                    <i class="bi bi-arrow-left me-1"></i> Voltar
+                </a>
+            </div>
+            <div class="card-body p-4">
+
+                <!-- Alerta de Erro -->
+                <div th:if="${mensagemErro}" class="alert alert-danger alert-dismissible fade show" role="alert">
+                    <i class="bi bi-exclamation-triangle-fill me-2"></i><span th:text="${mensagemErro}"></span>
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+
+                <form th:action="@{/viagens/atualizar}" th:object="${viagem}" method="post">
+
+                    <input type="hidden" th:field="*{idViagem}" />
+
+                    <div class="row g-3">
+                        <!-- Veículo -->
+                        <div class="col-md-6">
+                            <label for="idVeiculo" class="form-label fw-semibold">Veículo</label>
+                            <select id="idVeiculo" class="form-select" th:field="*{idVeiculo}" required>
+                                <option value="" disabled>Selecione um veículo...</option>
+                                <option th:each="veiculo : ${veiculos}"
+                                        th:value="${veiculo.idVeiculo}"
+                                        th:text="${veiculo.idVeiculo + ' - ' + veiculo.placa + ' (' + veiculo.modelo + ')'}">
+                                </option>
+                            </select>
+                        </div>
+
+                        <!-- ID Usuário -->
+                        <div class="col-md-6">
+                            <label for="idUsuario" class="form-label fw-semibold">ID Usuário</label>
+                            <input type="number" id="idUsuario" class="form-control" th:field="*{idUsuario}" placeholder="Ex: 1">
+                        </div>
+
+                        <!-- Cidade Destino -->
+                        <div class="col-md-8">
+                            <label for="cidadeDestino" class="form-label fw-semibold">Cidade de Destino</label>
+                            <input type="text" id="cidadeDestino" class="form-control" th:field="*{cidadeDestino}" required placeholder="Ex: Londrina">
+                        </div>
+
+                        <!-- UF -->
+                        <div class="col-md-4">
+                            <label for="estadoDestino" class="form-label fw-semibold">UF</label>
+                            <select id="estadoDestino" class="form-select" th:field="*{estadoDestino}" required>
+                                <option value="" disabled>Selecione...</option>
+                                <option th:each="estado : ${estados}"
+                                        th:value="${estado}"
+                                        th:text="${estado}">
+                                </option>
+                            </select>
+                        </div>
+
+                        <!-- KM Inicial -->
+                        <div class="col-md-6">
+                            <label for="kmInicial" class="form-label fw-semibold">KM Inicial</label>
+                            <input type="number" step="0.1" id="kmInicial" class="form-control" th:field="*{kmInicial}" required placeholder="Ex: 15000.0">
+                        </div>
+
+                        <!-- KM Final -->
+                        <div class="col-md-6">
+                            <label for="kmFinal" class="form-label fw-semibold">KM Final</label>
+                            <input type="number" step="0.1" id="kmFinal" class="form-control" th:field="*{kmFinal}" placeholder="Ex: 15200.0">
+                        </div>
+
+                        <!-- Status da Viagem -->
+                        <div class="col-md-6">
+                            <label for="statusViagem" class="form-label fw-semibold">Status da Viagem</label>
+                            <select id="statusViagem" class="form-select" th:field="*{statusViagem}" required>
+                                <option value="" disabled>Selecione um status...</option>
+                                <option th:each="st : ${statusOptions}"
+                                        th:value="${st}"
+                                        th:text="${st}">
+                                </option>
+                            </select>
+                        </div>
+
+                        <!-- Alerta de Manutenção -->
+                        <div class="col-md-6">
+                            <label for="alertaManutencao" class="form-label fw-semibold">Alerta de Manutenção</label>
+                            <select id="alertaManutencao" class="form-select" th:field="*{alertaManutencao}">
+                                <option value="" disabled>Selecione...</option>
+                                <option th:each="alerta : ${alertaOptions}"
+                                        th:value="${alerta}"
+                                        th:text="${alerta}">
+                                </option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <!-- Botões de Ação -->
+                    <div class="d-flex justify-content-end gap-2 mt-4">
+                        <a th:href="@{/viagens/listar}" class="btn btn-outline-primary">Cancelar</a>
+                        <button type="submit" class="btn btn-primary">
+                            <i class="bi bi-check-circle me-1"></i> Salvar Alterações
+                        </button>
+                    </div>
+
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
 </html>

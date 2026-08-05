@@ -11,6 +11,18 @@
         <div th:replace="~{fragments/navbar :: navbar}"></div>
         
         <div class="container my-4">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <div>
+                    <h2 class="fw-bold text-dark mb-0">Manutenções Registradas</h2>
+                </div>
+                
+                <div class="d-flex gap-2" th:if="${session.usuario != null and (session.usuario.cargo.name() == 'GESTOR_FROTA' or session.usuario.cargo.name() == 'ADMIN' or session.usuario.cargo.name() == 'MECANICO')}">
+                    <a th:href="@{/manutencoes/cadastrar}" class="btn btn-primary shadow-sm">
+                        <i class="bi bi-plus-circle me-1"></i> Registrar Manutenção
+                    </a>
+                </div>
+            </div>
+
             <div th:if="${mensagemSucesso}" class="alert alert-success alert-dismissible fade show shadow-sm" role="alert">
                 <i class="bi bi-check-circle-fill me-2"></i><span th:text="${mensagemSucesso}"></span>
                 <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
@@ -21,18 +33,13 @@
                 <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
             </div>
 
-            <div class="d-flex justify-content-between align-items-center mb-4">
-                <h2 class="fw-bold text-dark mb-0">Manutenções Registradas</h2>
-                
-                <div class="d-flex gap-2" th:if="${session.usuario != null and (session.usuario.cargo.name() == 'GESTOR_FROTA' or session.usuario.cargo.name() == 'ADMIN' or session.usuario.cargo.name() == 'MECANICO')}">
-                    <a th:href="@{/manutencoes/cadastrar}" class="btn btn-primary shadow-sm">
-                        <i class="bi bi-plus-circle me-1"></i> Registrar Manutenção
-                    </a>
-                </div>
-            </div>
-
             <!-- Card com a Tabela -->
-            <div class="card shadow-sm">
+            <div class="card shadow-sm border-0 rounded-3">
+                <div class="card-header bg-primary text-white d-flex align-items-center">
+                    <i class="bi bi-tools me-2"></i>
+                    <span class="fw-semibold">Manutenções</span>
+                    <span class="badge bg-white text-primary ms-2" th:text="${#lists.size(manutencoes)}">0</span>
+                </div>
                 <div class="card-body p-0">
                     <div class="table-responsive">
                         <table class="table table-hover align-middle mb-0">
@@ -43,7 +50,7 @@
                                     <th>Descrição</th>
                                     <th>Status Atual</th>
                                     <th>Alterar Status</th>
-                                    <th class="text-end pe-3" th:if="${session.usuario != null and (session.usuario.cargo.name() == 'GESTOR_FROTA' or session.usuario.cargo.name() == 'ADMIN')}">Ações</th>
+                                    <th class="text-end pe-3" th:if="${session.usuario != null and (session.usuario.cargo.name() == 'GESTOR_FROTA' or session.usuario.cargo.name() == 'ADMIN')}">Editar/Excluir</th>
                                 </tr>
                             </thead>
                             <tbody>
