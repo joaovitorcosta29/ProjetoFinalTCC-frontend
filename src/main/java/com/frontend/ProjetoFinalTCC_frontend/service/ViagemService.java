@@ -25,8 +25,6 @@ public class ViagemService {
                 .build();
     }
 
-    // Extrai a mensagem de erro real enviada pelo backend. Alguns endpoints devolvem
-    // um JSON padrão do Spring (campo "message"), outros devolvem o corpo como texto puro.
     private String extrairMensagemErro(HttpStatusCodeException e) {
         String corpo = e.getResponseBodyAsString();
 
@@ -37,7 +35,6 @@ public class ViagemService {
                     return node.get("message").asText();
                 }
             } catch (Exception ignored) {
-                // corpo não é JSON -> é texto puro, usa como está
                 return corpo;
             }
             return corpo;
