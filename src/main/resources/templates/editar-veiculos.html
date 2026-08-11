@@ -72,6 +72,18 @@
                                 </option>
                             </select>
                         </div>
+
+                        <!-- Alerta de Manutenção -->
+                        <div class="col-md-6">
+                            <label for="alertaManutencao" class="form-label fw-semibold">Alerta de Manutenção</label>
+                            <select id="alertaManutencao" class="form-select" th:field="*{alertaManutencao}" required>
+                                <option value="" disabled>Selecione...</option>
+                                <option th:each="a : ${alertaOptions}" 
+                                        th:value="${a}" 
+                                        th:text="${a}">
+                                </option>
+                            </select>
+                        </div>
                     </div>
 
                     <!-- Botões de Ação -->

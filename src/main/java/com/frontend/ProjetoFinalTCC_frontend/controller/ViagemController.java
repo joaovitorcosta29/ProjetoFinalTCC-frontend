@@ -2,7 +2,7 @@ package com.frontend.ProjetoFinalTCC_frontend.controller;
 
 import com.frontend.ProjetoFinalTCC_frontend.model.UsuarioDTO;
 import com.frontend.ProjetoFinalTCC_frontend.model.VeiculoDTO;
-import com.frontend.ProjetoFinalTCC_frontend.model.VeiculoDTO.StatusVeiculo; // Import do Enum
+import com.frontend.ProjetoFinalTCC_frontend.model.VeiculoDTO.StatusVeiculo;
 import com.frontend.ProjetoFinalTCC_frontend.model.ViagemDTO;
 import com.frontend.ProjetoFinalTCC_frontend.service.VeiculoService;
 import com.frontend.ProjetoFinalTCC_frontend.service.ViagemService;
@@ -74,6 +74,7 @@ public class ViagemController {
             return "redirect:/login";
         }
 
+        // A listagem completa (todas as viagens, de todos os motoristas) é só para quem gerencia a frota.
         if (usuarioLogado.getCargo() == UsuarioDTO.Cargo.MOTORISTA) {
             return "redirect:/viagens/minhas-viagens";
         }
@@ -152,7 +153,6 @@ public class ViagemController {
             model.addAttribute("veiculos", veiculos);
             model.addAttribute("estados", ViagemDTO.Estado.values());
             model.addAttribute("statusOptions", ViagemDTO.StatusViagem.values());
-            model.addAttribute("alertaOptions", ViagemDTO.AlertaManutencao.values());
 
             return "editar-viagens";
         } catch (Exception e) {

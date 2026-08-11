@@ -40,6 +40,7 @@ public class VeiculoController {
 
         model.addAttribute("veiculo", new VeiculoDTO());
         model.addAttribute("statuses", StatusVeiculo.values());
+        model.addAttribute("alertaOptions", VeiculoDTO.AlertaManutencao.values());
 
         return "cadastrar-veiculos";
     }
@@ -74,6 +75,7 @@ public class VeiculoController {
 
             model.addAttribute("veiculo", veiculo);
             model.addAttribute("statusOptions", StatusVeiculo.values());
+            model.addAttribute("alertaOptions", VeiculoDTO.AlertaManutencao.values());
 
             return "editar-veiculos";
         } catch (Exception e) {

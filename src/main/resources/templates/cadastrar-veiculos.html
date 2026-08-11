@@ -55,6 +55,15 @@
                                     th:text="${s}"></option>
                         </select>
                     </div>
+                    <div class="col-md-4">
+                        <label class="form-label fw-bold">Alerta de Manutenção</label>
+                        <select th:field="*{alertaManutencao}" class="form-select" required>
+                            <option value="" disabled selected>Selecione...</option>
+                            <option th:each="a : ${alertaOptions}" 
+                                    th:value="${a}" 
+                                    th:text="${a}"></option>
+                        </select>
+                    </div>
                     <div class="col-12 text-end">
                         <button type="submit" class="btn btn-success px-4 fw-bold">Salvar Veículo</button>
                     </div>

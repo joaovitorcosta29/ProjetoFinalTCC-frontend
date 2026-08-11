@@ -9,6 +9,11 @@ public class VeiculoDTO {
         DESATIVADO
     }
 
+    public enum AlertaManutencao {
+        OK,
+        REVISAO_NECESSARIA
+    }
+
     private Long idVeiculo;
     private String placa;
     private String modelo;
@@ -16,6 +21,7 @@ public class VeiculoDTO {
     private Double kmAtual;
     private Double kmUltimaManutencao;
     private StatusVeiculo status;
+    private AlertaManutencao alertaManutencao;
 
     public VeiculoDTO() {
     }
@@ -84,5 +90,13 @@ public class VeiculoDTO {
 
     public void setStatus(StatusVeiculo status) {
         this.status = status;
+    }
+
+    public AlertaManutencao getAlertaManutencao() {
+        return alertaManutencao;
+    }
+
+    public void setAlertaManutencao(AlertaManutencao alertaManutencao) {
+        this.alertaManutencao = alertaManutencao;
     }
 }

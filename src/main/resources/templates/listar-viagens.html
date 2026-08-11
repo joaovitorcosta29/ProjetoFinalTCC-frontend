@@ -14,6 +14,7 @@
             <div class="d-flex justify-content-between align-items-center mb-4">
                 <div>
                     <h2 class="fw-bold text-dark mb-0">Viagens Cadastradas</h2>
+                    <p class="text-muted mb-0 small">Gerencie as viagens da frota.</p>
                 </div>
 
                 <a th:if="${session.usuario != null and (session.usuario.cargo.name() == 'GESTOR_FROTA' or session.usuario.cargo.name() == 'ADMIN')}" 
@@ -54,8 +55,7 @@
                                     <th>KM Inicial</th>
                                     <th>KM Final</th>
                                     <th>Status</th>
-                                    <th>Alerta Manutenção</th>
-                                    <th class="text-center">Editar</th>
+                                    <th class="text-center">Ações</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -77,17 +77,20 @@
                                         <span th:if="${v.statusViagem != null and v.statusViagem.name() == 'FINALIZADA'}" 
                                               class="badge bg-secondary">FINALIZADA</span>
                                     </td>
-                                    <td th:text="${v.alertaManutencao != null ? v.alertaManutencao : '-'}"></td>
 
                                     <td class="text-center">
+                                        <span th:if="${v.statusViagem != null and v.statusViagem.name() == 'FINALIZADA'}" class="text-muted small me-2">
+                                            <i class="bi bi-check2-all text-success"></i> Concluída
+                                        </span>
+
                                         <a th:href="@{'/viagens/editar/' + ${v.idViagem}}"
                                            class="btn btn-sm btn-outline-primary shadow-sm">
                                             <i class="bi bi-pencil-square me-1"></i> Editar
-                                        </a>                                     
+                                        </a>
                                     </td>
                                 </tr>
                                 <tr th:if="${#lists.isEmpty(viagens)}">
-                                    <td colspan="10" class="text-center py-4 text-muted">
+                                    <td colspan="9" class="text-center py-4 text-muted">
                                         Nenhuma viagem encontrada.
                                     </td>
                                 </tr>

@@ -19,7 +19,6 @@ public class ViagemDTO {
     private Double kmInicial;
     private Double kmFinal;
     private StatusViagem statusViagem;
-    private AlertaManutencao alertaManutencao;
 
     public enum Estado {
         AC, AL, AP, AM, BA, CE, DF, ES, GO, MA, 
@@ -31,11 +30,6 @@ public class ViagemDTO {
         DISPONIVEL,
         EM_ANDAMENTO,
         FINALIZADA
-    }
-
-    public enum AlertaManutencao {
-        OK,
-        REVISAO_NECESSARIA
     }
 
     public ViagemDTO() {
@@ -103,13 +97,5 @@ public class ViagemDTO {
 
     public void setStatusViagem(StatusViagem statusViagem) {
         this.statusViagem = statusViagem;
-    }
-
-    public AlertaManutencao getAlertaManutencao() {
-        return alertaManutencao;
-    }
-
-    public void setAlertaManutencao(AlertaManutencao alertaManutencao) {
-        this.alertaManutencao = alertaManutencao;
     }
 }
