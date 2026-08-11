@@ -4,15 +4,19 @@ import com.frontend.ProjetoFinalTCC_frontend.model.VeiculoDTO;
 import com.frontend.ProjetoFinalTCC_frontend.model.VeiculoDTO.StatusVeiculo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.HttpStatusCodeException;
 import org.springframework.web.client.RestClient;
 
 import java.util.Arrays;
 import java.util.List;
+import tools.jackson.databind.JsonNode;
+import tools.jackson.databind.ObjectMapper;
 
 @Service
 public class VeiculoService {
 
     private final RestClient restClient;
+    private final ObjectMapper objectMapper = new ObjectMapper();
 
     @Autowired
     public VeiculoService(ApiService apiService) {
@@ -21,16 +25,38 @@ public class VeiculoService {
                 .build();
     }
 
+    private String extrairMensagemErro(HttpStatusCodeException e) {
+        String corpo = e.getResponseBodyAsString();
+
+        if (corpo != null && !corpo.isBlank()) {
+            try {
+                JsonNode node = objectMapper.readTree(corpo);
+                if (node.has("message") && !node.get("message").asText().isBlank()) {
+                    return node.get("message").asText();
+                }
+            } catch (Exception ignored) {
+                return corpo;
+            }
+            return corpo;
+        }
+
+        return e.getMessage();
+    }
+
     public void cadastrar(VeiculoDTO veiculo) {
         if (veiculo.getPlaca() == null || veiculo.getPlaca().trim().isEmpty()) {
             throw new IllegalArgumentException("A placa do veículo não pode estar vazia.");
         }
 
-        restClient.post()
-                .uri("/veiculos/cadastrar")
-                .body(veiculo)
-                .retrieve()
-                .toBodilessEntity();
+        try {
+            restClient.post()
+                    .uri("/veiculos/cadastrar")
+                    .body(veiculo)
+                    .retrieve()
+                    .toBodilessEntity();
+        } catch (HttpStatusCodeException e) {
+            throw new RuntimeException(extrairMensagemErro(e));
+        }
     }
 
     public List<VeiculoDTO> listarTodos() {
@@ -54,11 +80,15 @@ public class VeiculoService {
             throw new IllegalArgumentException("ID do veículo inválido para atualização.");
         }
 
-        restClient.put()
-                .uri("/veiculos/atualizar")
-                .body(veiculo)
-                .retrieve()
-                .toBodilessEntity();
+        try {
+            restClient.put()
+                    .uri("/veiculos/atualizar")
+                    .body(veiculo)
+                    .retrieve()
+                    .toBodilessEntity();
+        } catch (HttpStatusCodeException e) {
+            throw new RuntimeException(extrairMensagemErro(e));
+        }
     }
 
     public void alterarStatus(Long idVeiculo, StatusVeiculo status) {

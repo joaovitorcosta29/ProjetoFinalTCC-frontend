@@ -28,7 +28,7 @@
                 <form th:action="@{/veiculos/cadastrar}" th:object="${veiculo}" method="post" class="row g-3">
                     <div class="col-md-3">
                         <label class="form-label fw-bold">Placa</label>
-                        <input type="text" th:field="*{placa}" class="form-control" placeholder="ABC-1234" required>
+                        <input type="text" th:field="*{placa}" class="form-control" placeholder="ABC-1234" minlength="8" maxlength="8" style="text-transform: uppercase;" required>
                     </div>
                     <div class="col-md-3">
                         <label class="form-label fw-bold">Modelo</label>

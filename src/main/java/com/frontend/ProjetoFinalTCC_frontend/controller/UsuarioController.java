@@ -63,7 +63,9 @@ public class UsuarioController {
 
     @GetMapping("/registrar")
     public String exibirFormularioRegistro(Model model) {
-        model.addAttribute("usuario", new UsuarioDTO());
+        UsuarioDTO usuario = new UsuarioDTO();
+        usuario.setCargo(UsuarioDTO.Cargo.MOTORISTA);
+        model.addAttribute("usuario", usuario);
         return "registrar";
     }
 

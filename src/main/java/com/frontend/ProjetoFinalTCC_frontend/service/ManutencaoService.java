@@ -6,18 +6,40 @@ import java.util.Arrays;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.HttpStatusCodeException;
 import org.springframework.web.client.RestClient;
+import tools.jackson.databind.JsonNode;
+import tools.jackson.databind.ObjectMapper;
 
 @Service
 public class ManutencaoService {
 
     private final RestClient restClient;
+    private final ObjectMapper objectMapper = new ObjectMapper();
 
     @Autowired
     public ManutencaoService(ApiService apiService) {
         this.restClient = RestClient.builder()
                 .baseUrl(apiService.getBaseUrl())
                 .build();
+    }
+
+    private String extrairMensagemErro(HttpStatusCodeException e) {
+        String corpo = e.getResponseBodyAsString();
+
+        if (corpo != null && !corpo.isBlank()) {
+            try {
+                JsonNode node = objectMapper.readTree(corpo);
+                if (node.has("message") && !node.get("message").asText().isBlank()) {
+                    return node.get("message").asText();
+                }
+            } catch (Exception ignored) {
+                return corpo;
+            }
+            return corpo;
+        }
+
+        return e.getMessage();
     }
 
     public String salvar(ManutencaoDTO manutencao) {
@@ -37,8 +59,8 @@ public class ManutencaoService {
                         .toBodilessEntity();
             }
             return "Manutenção salva com sucesso!";
-        } catch (Exception e) {
-            throw new RuntimeException("Erro ao comunicar com o backend: " + e.getMessage());
+        } catch (HttpStatusCodeException e) {
+            throw new RuntimeException(extrairMensagemErro(e));
         }
     }
 
@@ -59,10 +81,16 @@ public class ManutencaoService {
     }
 
     public void alterarStatus(Integer idManutencao, StatusManutencao novoStatus) {
-        ManutencaoDTO manutencao = buscarPorId(idManutencao);
-        if (manutencao != null) {
-            manutencao.setStatusManutencao(novoStatus);
-            salvar(manutencao);
+        try {
+            restClient.patch()
+                    .uri(uriBuilder -> uriBuilder
+                            .path("/api/manutencoes/{id}/status")
+                            .queryParam("novoStatus", novoStatus)
+                            .build(idManutencao))
+                    .retrieve()
+                    .toBodilessEntity();
+        } catch (HttpStatusCodeException e) {
+            throw new RuntimeException(extrairMensagemErro(e));
         }
     }
 

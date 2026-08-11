@@ -34,7 +34,7 @@
                         <!-- Placa -->
                         <div class="col-md-6">
                             <label for="placa" class="form-label fw-semibold">Placa</label>
-                            <input type="text" id="placa" class="form-control" th:field="*{placa}" required placeholder="Ex: ABC-1234">
+                            <input type="text" id="placa" class="form-control" th:field="*{placa}" required placeholder="Ex: ABC-1234" minlength="8" maxlength="8" style="text-transform: uppercase;">
                         </div>
 
                         <!-- Modelo -->

@@ -73,6 +73,11 @@ public class VeiculoController {
                 return "redirect:/veiculos/listar";
             }
 
+            if (veiculo.getStatus() == StatusVeiculo.EM_USO) {
+                redirectAttributes.addFlashAttribute("mensagemErro", "Não é possível editar um veículo que está em uso.");
+                return "redirect:/veiculos/listar";
+            }
+
             model.addAttribute("veiculo", veiculo);
             model.addAttribute("statusOptions", StatusVeiculo.values());
             model.addAttribute("alertaOptions", VeiculoDTO.AlertaManutencao.values());

@@ -24,8 +24,8 @@
                         <form th:action="@{/registrar}" th:object="${usuario}" method="post">
 
                             <div class="form-floating mb-4 text-start">
-                                <input type="text" class="form-control" id="floatingNome" placeholder="" th:field="*{nome}" required>
-                                <label for="floatingNome">Nome</label>
+                                <input type="text" class="form-control" id="floatingNome" placeholder="" th:field="*{nome}" minlength="10" required>
+                                <label for="floatingNome">Nome completo</label>
                             </div>
 
                             <div class="form-floating mb-4 text-start">
@@ -34,8 +34,21 @@
                             </div>
 
                             <div class="form-floating mb-4 text-start">
-                                <input type="password" class="form-control" id="floatingSenha" placeholder="" th:field="*{senha}" required>
-                                <label for="floatingSenha">Senha</label>
+                                <input type="password" class="form-control" id="floatingSenha" placeholder="" th:field="*{senha}" minlength="8" required>
+                                <label for="floatingSenha">Senha (mín. 8 caracteres)</label>
+                            </div>
+
+                            <div class="mb-4 text-start">
+                                <label class="form-label fw-semibold d-block">Quero me cadastrar como:</label>
+
+                                <div class="form-check">
+                                    <input class="form-check-input" type="radio" th:field="*{cargo}" th:value="MOTORISTA">
+                                    <label class="form-check-label" th:for="${#ids.prev('cargo')}">Motorista</label>
+                                </div>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="radio" th:field="*{cargo}" th:value="GESTOR_FROTA">
+                                    <label class="form-check-label" th:for="${#ids.prev('cargo')}">Gestor de Frota</label>
+                                </div>
                             </div>
 
                             <button type="submit" class="btn btn-primary w-100 py-2 fw-semibold shadow-sm mb-4">Cadastrar-se</button>

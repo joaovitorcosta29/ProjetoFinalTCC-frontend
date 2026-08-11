@@ -46,6 +46,10 @@
                     <span class="badge bg-white text-primary ms-2" th:text="${#lists.size(disponiveis)}">0</span>
                 </div>
                 <div class="card-body p-0">
+                    <div th:if="${possuiViagemEmAndamento}" class="alert alert-warning m-3 mb-0 py-2 small">
+                        <i class="bi bi-exclamation-triangle-fill me-1"></i>
+                        Você já tem uma viagem em andamento. Finalize-a antes de assumir outra.
+                    </div>
                     <div class="table-responsive">
                         <table class="table table-hover align-middle mb-0">
                             <thead class="table-light">
@@ -64,7 +68,7 @@
                                     <td th:text="${v.estadoDestino}"></td>
                                     <td th:text="${v.kmInicial}"></td>
                                     <td class="text-center">
-                                        <form th:action="@{/viagens/assumir}" method="post" class="d-inline">
+                                        <form th:if="${!possuiViagemEmAndamento}" th:action="@{/viagens/assumir}" method="post" class="d-inline">
                                             <input type="hidden" name="idViagem" th:value="${v.idViagem}" />
                                             <button type="submit" class="btn btn-primary btn-assumir shadow-sm">
                                                 <i class="bi bi-hand-index-thumb me-1"></i>Assumir

@@ -1,15 +1,66 @@
 <!DOCTYPE html>
-<!--
-Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
-Click nbfs://nbhost/SystemFileSystem/Templates/Other/html.html to edit this template
--->
-<html>
-    <head>
-        <title>TODO supply a title</title>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    </head>
-    <body>
-        <div>TODO write content</div>
-    </body>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Editar Manutenção</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+</head>
+<body class="bg-light">
+
+    <div th:replace="~{fragments/navbar :: navbar}"></div>
+
+    <div class="container my-5" style="max-width: 650px;">
+        <div class="card shadow-sm">
+            <div class="card-header bg-primary text-white d-flex align-items-center justify-content-between">
+                <h4 class="mb-0 fs-5"><i class="bi bi-pencil-square me-2"></i>Editar Manutenção</h4>
+                <a th:href="@{/manutencoes/listar}" class="btn btn-sm btn-outline-light">
+                    <i class="bi bi-arrow-left me-1"></i> Voltar
+                </a>
+            </div>
+            <div class="card-body p-4">
+
+                <div th:if="${mensagemErro}" class="alert alert-danger alert-dismissible fade show" role="alert">
+                    <i class="bi bi-exclamation-triangle-fill me-2"></i><span th:text="${mensagemErro}"></span>
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+
+                <form th:action="@{/manutencoes/salvar}" th:object="${manutencao}" method="post">
+
+                    <input type="hidden" th:field="*{idManutencao}" />
+                    <input type="hidden" th:field="*{statusManutencao}" />
+
+                    <div class="row g-3">
+                        <div class="col-12">
+                            <label for="idVeiculo" class="form-label fw-semibold">Veículo</label>
+                            <select id="idVeiculo" class="form-select" th:field="*{idVeiculo}" required>
+                                <option value="" disabled>Selecione um veículo...</option>
+                                <option th:each="v : ${veiculosDisponiveis}"
+                                        th:value="${v.idVeiculo}"
+                                        th:text="${v.idVeiculo + ' - ' + v.placa + ' (' + v.modelo + ')'}">
+                                </option>
+                            </select>
+                        </div>
+
+                        <div class="col-12">
+                            <label for="descricao" class="form-label fw-semibold">Descrição do Serviço</label>
+                            <textarea id="descricao" th:field="*{descricao}" class="form-control" rows="3"
+                                      placeholder="Descreva detalhadamente o serviço ou motivo da manutenção..." required></textarea>
+                        </div>
+                    </div>
+
+                    <div class="d-flex justify-content-end gap-2 mt-4">
+                        <a th:href="@{/manutencoes/listar}" class="btn btn-outline-primary">Cancelar</a>
+                        <button type="submit" class="btn btn-primary">
+                            <i class="bi bi-check-circle me-1"></i> Salvar Alterações
+                        </button>
+                    </div>
+
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
 </html>

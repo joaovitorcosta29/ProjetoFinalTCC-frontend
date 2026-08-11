@@ -70,12 +70,23 @@ public class ManutencaoController {
     public String editarManutencao(@PathVariable Integer id, Model model, RedirectAttributes redirectAttributes) {
         try {
             ManutencaoDTO manutencao = manutencaoService.buscarPorId(id);
+
+            if (manutencao == null) {
+                redirectAttributes.addFlashAttribute("mensagemErro", "Manutenção não encontrada.");
+                return "redirect:/manutencoes/listar";
+            }
+
+            if (manutencao.getStatusManutencao() != null && manutencao.getStatusManutencao() != StatusManutencao.PENDENTE) {
+                redirectAttributes.addFlashAttribute("mensagemErro", "Só é possível editar manutenções que ainda estão pendentes.");
+                return "redirect:/manutencoes/listar";
+            }
+
             model.addAttribute("manutencao", manutencao);
             model.addAttribute("veiculosDisponiveis", veiculoService.listarTodos().stream()
                     .filter(v -> "DISPONIVEL".equalsIgnoreCase(v.getStatus().name()) || v.getIdVeiculo().equals(manutencao.getIdVeiculo()))
                     .toList());
             model.addAttribute("statusOptions", StatusManutencao.values());
-            return "cadastrar-manutencoes";
+            return "editar-manutencoes";
         } catch (Exception e) {
             redirectAttributes.addFlashAttribute("mensagemErro", "Erro ao carregar manutenção para edição.");
             return "redirect:/manutencoes/listar";

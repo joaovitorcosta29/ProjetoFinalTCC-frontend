@@ -2,7 +2,7 @@ package com.frontend.ProjetoFinalTCC_frontend.controller;
 
 import com.frontend.ProjetoFinalTCC_frontend.model.UsuarioDTO;
 import com.frontend.ProjetoFinalTCC_frontend.model.VeiculoDTO;
-import com.frontend.ProjetoFinalTCC_frontend.model.VeiculoDTO.StatusVeiculo;
+import com.frontend.ProjetoFinalTCC_frontend.model.VeiculoDTO.StatusVeiculo; // Import do Enum
 import com.frontend.ProjetoFinalTCC_frontend.model.ViagemDTO;
 import com.frontend.ProjetoFinalTCC_frontend.service.VeiculoService;
 import com.frontend.ProjetoFinalTCC_frontend.service.ViagemService;
@@ -79,7 +79,18 @@ public class ViagemController {
             return "redirect:/viagens/minhas-viagens";
         }
 
-        model.addAttribute("viagens", viagemService.listarTodas());
+        List<ViagemDTO> todasAsViagens = viagemService.listarTodas();
+
+        List<ViagemDTO> viagensAtivas = todasAsViagens.stream()
+                .filter(v -> v.getStatusViagem() != ViagemDTO.StatusViagem.FINALIZADA)
+                .toList();
+
+        List<ViagemDTO> viagensFinalizadas = todasAsViagens.stream()
+                .filter(v -> v.getStatusViagem() == ViagemDTO.StatusViagem.FINALIZADA)
+                .toList();
+
+        model.addAttribute("viagens", viagensAtivas);
+        model.addAttribute("viagensFinalizadas", viagensFinalizadas);
         model.addAttribute("usuario", usuarioLogado);
         return "listar-viagens";
     }
@@ -111,6 +122,9 @@ public class ViagemController {
                         && (v.getStatusViagem() == null || v.getStatusViagem() != ViagemDTO.StatusViagem.FINALIZADA))
                 .toList();
 
+        // Um motorista só pode ter uma viagem em andamento por vez.
+        boolean possuiViagemEmAndamento = !emAndamento.isEmpty();
+
         // Concluídas: finalizadas por MIM. Viagens de outros motoristas nunca aparecem aqui.
         List<ViagemDTO> concluidas = todas.stream()
                 .filter(v -> meuId.equals(v.getIdUsuario())
@@ -121,6 +135,7 @@ public class ViagemController {
         model.addAttribute("disponiveis", disponiveis);
         model.addAttribute("emAndamento", emAndamento);
         model.addAttribute("concluidas", concluidas);
+        model.addAttribute("possuiViagemEmAndamento", possuiViagemEmAndamento);
 
         return "minhas-viagens";
     }
@@ -144,6 +159,11 @@ public class ViagemController {
 
             if (viagem == null) {
                 redirectAttributes.addFlashAttribute("mensagemErro", "Viagem não encontrada.");
+                return "redirect:/viagens/listar";
+            }
+
+            if (viagem.getStatusViagem() != null && viagem.getStatusViagem() != ViagemDTO.StatusViagem.DISPONIVEL) {
+                redirectAttributes.addFlashAttribute("mensagemErro", "Só é possível editar viagens que ainda não foram assumidas por um motorista.");
                 return "redirect:/viagens/listar";
             }
 
@@ -211,7 +231,7 @@ public class ViagemController {
             viagemService.assumirViagem(idViagem, usuarioLogado.getIdUsuario().intValue());
             redirect.addFlashAttribute("mensagemSucesso", "Viagem assumida com sucesso! Ao concluir, finalize-a na sua lista.");
         } catch (Exception e) {
-            redirect.addFlashAttribute("mensagemErro", "Erro ao assumir viagem: " + e.getMessage());
+            redirect.addFlashAttribute("mensagemErro", e.getMessage());
         }
 
         return redirectPosAcao(usuarioLogado);
