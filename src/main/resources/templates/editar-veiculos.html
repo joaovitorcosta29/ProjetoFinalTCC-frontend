@@ -12,15 +12,11 @@
 
     <div class="container my-5" style="max-width: 650px;">
         <div class="card shadow-sm">
-            <div class="card-header bg-primary text-white d-flex align-items-center justify-content-between">
+            <div class="card-header bg-primary text-white">
                 <h4 class="mb-0 fs-5"><i class="bi bi-pencil-square me-2"></i>Editar Veículo</h4>
-                <a th:href="@{/veiculos/listar}" class="btn btn-sm btn-outline-light">
-                    <i class="bi bi-arrow-left me-1"></i> Voltar
-                </a>
             </div>
             <div class="card-body p-4">
 
-                <!-- Alerta de Erro -->
                 <div th:if="${mensagemErro}" class="alert alert-danger alert-dismissible fade show" role="alert">
                     <i class="bi bi-exclamation-triangle-fill me-2"></i><span th:text="${mensagemErro}"></span>
                     <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
@@ -55,38 +51,30 @@
                             <input type="number" step="0.1" id="kmAtual" class="form-control" th:field="*{kmAtual}" required placeholder="Ex: 15000.0">
                         </div>
 
-                        <!-- KM Última Manutenção -->
+                        <!-- KM Última Manutenção (somente leitura) -->
                         <div class="col-md-6">
-                            <label for="kmUltimaManutencao" class="form-label fw-semibold">KM Última Manutenção</label>
-                            <input type="number" step="0.1" id="kmUltimaManutencao" class="form-control" th:field="*{kmUltimaManutencao}" placeholder="Ex: 10000.0">
+                            <label class="form-label fw-semibold">KM Última Manutenção</label>
+                            <input type="text" class="form-control" th:value="${veiculo.kmUltimaManutencao}" disabled readonly>
+                            <div class="form-text">Atualizado automaticamente quando uma manutenção é concluída.</div>
                         </div>
 
-                        <!-- Status do Veículo -->
+                        <!-- Status do Veículo (somente leitura) -->
                         <div class="col-md-6">
-                            <label for="status" class="form-label fw-semibold">Status do Veículo</label>
-                            <select id="status" class="form-select" th:field="*{status}" required>
-                                <option value="" disabled>Selecione um status...</option>
-                                <option th:each="st : ${statusOptions}" 
-                                        th:value="${st}" 
-                                        th:text="${st}">
-                                </option>
-                            </select>
+                            <label class="form-label fw-semibold">Status do Veículo</label>
+                            <input type="text" class="form-control" th:value="${veiculo.status}" disabled readonly>
                         </div>
 
-                        <!-- Alerta de Manutenção -->
-                        <div class="col-md-6">
-                            <label for="alertaManutencao" class="form-label fw-semibold">Alerta de Manutenção</label>
-                            <select id="alertaManutencao" class="form-select" th:field="*{alertaManutencao}" required>
-                                <option value="" disabled>Selecione...</option>
-                                <option th:each="a : ${alertaOptions}" 
-                                        th:value="${a}" 
-                                        th:text="${a}">
-                                </option>
-                            </select>
+                        <!-- Alerta de Manutenção (somente leitura, centralizado) -->
+                        <div class="col-12">
+                            <label class="form-label fw-semibold d-block">Alerta de Manutenção</label>
+                            <div class="d-flex justify-content-center">
+                                <span th:if="${veiculo.alertaManutencao != null and veiculo.alertaManutencao.name() == 'OK'}" class="badge bg-success fs-6 px-3 py-2">OK</span>
+                                <span th:if="${veiculo.alertaManutencao != null and veiculo.alertaManutencao.name() == 'REVISAO_NECESSARIA'}" class="badge bg-danger fs-6 px-3 py-2">REVISÃO NECESSÁRIA</span>
+                            </div>
+                            <div class="form-text text-center">Calculado automaticamente com base na quilometragem rodada desde a última manutenção.</div>
                         </div>
                     </div>
 
-                    <!-- Botões de Ação -->
                     <div class="d-flex justify-content-end gap-2 mt-4">
                         <a th:href="@{/veiculos/listar}" class="btn btn-outline-primary">Cancelar</a>
                         <button type="submit" class="btn btn-primary">

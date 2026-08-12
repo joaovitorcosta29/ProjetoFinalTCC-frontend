@@ -26,6 +26,10 @@ public class VeiculoController {
             return "redirect:/login";
         }
 
+        if (usuarioLogado.getCargo() != UsuarioDTO.Cargo.GESTOR_FROTA && usuarioLogado.getCargo() != UsuarioDTO.Cargo.ADMIN) {
+            return "redirect:/";
+        }
+
         model.addAttribute("veiculos", veiculoService.listarTodos());
         return "listar-veiculos";
     }
@@ -38,15 +42,27 @@ public class VeiculoController {
             return "redirect:/login";
         }
 
+        if (usuarioLogado.getCargo() != UsuarioDTO.Cargo.GESTOR_FROTA && usuarioLogado.getCargo() != UsuarioDTO.Cargo.ADMIN) {
+            return "redirect:/";
+        }
+
         model.addAttribute("veiculo", new VeiculoDTO());
-        model.addAttribute("statuses", StatusVeiculo.values());
-        model.addAttribute("alertaOptions", VeiculoDTO.AlertaManutencao.values());
 
         return "cadastrar-veiculos";
     }
 
     @PostMapping("/cadastrar")
-    public String cadastrar(@ModelAttribute("veiculo") VeiculoDTO veiculo, RedirectAttributes redirect) {
+    public String cadastrar(@ModelAttribute("veiculo") VeiculoDTO veiculo, HttpSession session, RedirectAttributes redirect) {
+        UsuarioDTO usuarioLogado = (UsuarioDTO) session.getAttribute("usuario");
+
+        if (usuarioLogado == null) {
+            return "redirect:/login";
+        }
+
+        if (usuarioLogado.getCargo() != UsuarioDTO.Cargo.GESTOR_FROTA && usuarioLogado.getCargo() != UsuarioDTO.Cargo.ADMIN) {
+            return "redirect:/";
+        }
+
         try {
             veiculoService.cadastrar(veiculo);
             redirect.addFlashAttribute("mensagemSucesso", "Veículo cadastrado com sucesso!");
@@ -65,6 +81,10 @@ public class VeiculoController {
             return "redirect:/login";
         }
 
+        if (usuarioLogado.getCargo() != UsuarioDTO.Cargo.GESTOR_FROTA && usuarioLogado.getCargo() != UsuarioDTO.Cargo.ADMIN) {
+            return "redirect:/";
+        }
+
         try {
             VeiculoDTO veiculo = veiculoService.buscarPorId(id);
 
@@ -79,8 +99,6 @@ public class VeiculoController {
             }
 
             model.addAttribute("veiculo", veiculo);
-            model.addAttribute("statusOptions", StatusVeiculo.values());
-            model.addAttribute("alertaOptions", VeiculoDTO.AlertaManutencao.values());
 
             return "editar-veiculos";
         } catch (Exception e) {
@@ -90,7 +108,17 @@ public class VeiculoController {
     }
 
     @PostMapping("/atualizar")
-    public String atualizar(@ModelAttribute("veiculo") VeiculoDTO veiculo, RedirectAttributes redirect) {
+    public String atualizar(@ModelAttribute("veiculo") VeiculoDTO veiculo, HttpSession session, RedirectAttributes redirect) {
+        UsuarioDTO usuarioLogado = (UsuarioDTO) session.getAttribute("usuario");
+
+        if (usuarioLogado == null) {
+            return "redirect:/login";
+        }
+
+        if (usuarioLogado.getCargo() != UsuarioDTO.Cargo.GESTOR_FROTA && usuarioLogado.getCargo() != UsuarioDTO.Cargo.ADMIN) {
+            return "redirect:/";
+        }
+
         try {
             veiculoService.editarVeiculo(veiculo);
             redirect.addFlashAttribute("mensagemSucesso", "Veículo atualizado com sucesso!");

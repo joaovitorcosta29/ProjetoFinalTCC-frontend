@@ -38,6 +38,12 @@
                 <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
             </div>
 
+            <!-- Aviso de viagem em andamento -->
+            <div th:if="${possuiViagemEmAndamento}" class="alert alert-warning" role="alert">
+                <i class="bi bi-exclamation-triangle-fill me-2"></i>
+                Você já tem uma viagem em andamento. Finalize-a antes de assumir outra.
+            </div>
+
             <!-- ================= VIAGENS DISPONÍVEIS ================= -->
             <div class="card shadow-sm border-0 rounded-3 mb-4">
                 <div class="card-header bg-primary text-white d-flex align-items-center">
@@ -46,10 +52,6 @@
                     <span class="badge bg-white text-primary ms-2" th:text="${#lists.size(disponiveis)}">0</span>
                 </div>
                 <div class="card-body p-0">
-                    <div th:if="${possuiViagemEmAndamento}" class="alert alert-warning m-3 mb-0 py-2 small">
-                        <i class="bi bi-exclamation-triangle-fill me-1"></i>
-                        Você já tem uma viagem em andamento. Finalize-a antes de assumir outra.
-                    </div>
                     <div class="table-responsive">
                         <table class="table table-hover align-middle mb-0">
                             <thead class="table-light">
@@ -114,9 +116,16 @@
                                     <td th:text="${v.kmInicial}"></td>
                                     <td class="text-center">
                                         <a th:href="@{'/viagens/finalizar/' + ${v.idViagem}}"
-                                           class="btn btn-sm btn-success shadow-sm">
+                                           class="btn btn-sm btn-success shadow-sm me-1">
                                             <i class="bi bi-check-circle me-1"></i> Finalizar
                                         </a>
+                                        <form th:action="@{/viagens/cancelar}" method="post" class="d-inline"
+                                              onsubmit="return confirm('Tem certeza que deseja cancelar esta viagem? Ela ficará disponível para outro motorista.');">
+                                            <input type="hidden" name="idViagem" th:value="${v.idViagem}" />
+                                            <button type="submit" class="btn btn-sm btn-outline-danger shadow-sm">
+                                                <i class="bi bi-x-circle me-1"></i> Cancelar
+                                            </button>
+                                        </form>
                                     </td>
                                 </tr>
                                 <tr th:if="${#lists.isEmpty(emAndamento)}">

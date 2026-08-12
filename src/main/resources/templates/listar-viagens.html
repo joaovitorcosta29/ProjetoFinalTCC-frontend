@@ -52,7 +52,6 @@
                                     <th>Cidade</th>
                                     <th>UF</th>
                                     <th>KM Inicial</th>
-                                    <th>KM Final</th>
                                     <th>Status</th>
                                     <th class="text-center">Ações</th>
                                 </tr>
@@ -65,7 +64,6 @@
                                     <td th:text="${v.cidadeDestino}"></td>
                                     <td th:text="${v.estadoDestino}"></td>
                                     <td th:text="${v.kmInicial}"></td>
-                                    <td th:text="${v.kmFinal != null ? v.kmFinal : '-'}"></td>
                                     <td>
                                         <span th:if="${v.statusViagem != null and v.statusViagem.name() == 'DISPONIVEL'}" 
                                               class="badge bg-success">DISPONÍVEL</span>
@@ -86,7 +84,7 @@
                                     </td>
                                 </tr>
                                 <tr th:if="${#lists.isEmpty(viagens)}">
-                                    <td colspan="9" class="text-center py-4 text-muted">
+                                    <td colspan="8" class="text-center py-4 text-muted">
                                         Nenhuma viagem encontrada.
                                     </td>
                                 </tr>

@@ -172,7 +172,6 @@ public class ViagemController {
             model.addAttribute("viagem", viagem);
             model.addAttribute("veiculos", veiculos);
             model.addAttribute("estados", ViagemDTO.Estado.values());
-            model.addAttribute("statusOptions", ViagemDTO.StatusViagem.values());
 
             return "editar-viagens";
         } catch (Exception e) {
@@ -230,6 +229,29 @@ public class ViagemController {
         try {
             viagemService.assumirViagem(idViagem, usuarioLogado.getIdUsuario().intValue());
             redirect.addFlashAttribute("mensagemSucesso", "Viagem assumida com sucesso! Ao concluir, finalize-a na sua lista.");
+        } catch (Exception e) {
+            redirect.addFlashAttribute("mensagemErro", e.getMessage());
+        }
+
+        return redirectPosAcao(usuarioLogado);
+    }
+
+    @PostMapping("/cancelar")
+    public String cancelarViagem(@RequestParam("idViagem") Long idViagem, HttpSession session,
+                                  RedirectAttributes redirect) {
+        UsuarioDTO usuarioLogado = (UsuarioDTO) session.getAttribute("usuario");
+
+        if (usuarioLogado == null) {
+            return "redirect:/login";
+        }
+
+        if (usuarioLogado.getCargo() != UsuarioDTO.Cargo.MOTORISTA) {
+            return "redirect:/";
+        }
+
+        try {
+            viagemService.cancelarViagem(idViagem, usuarioLogado.getIdUsuario().intValue());
+            redirect.addFlashAttribute("mensagemSucesso", "Viagem cancelada. Ela já está disponível novamente.");
         } catch (Exception e) {
             redirect.addFlashAttribute("mensagemErro", e.getMessage());
         }

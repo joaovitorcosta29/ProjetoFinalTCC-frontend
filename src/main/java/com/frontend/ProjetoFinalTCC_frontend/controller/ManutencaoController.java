@@ -2,8 +2,10 @@ package com.frontend.ProjetoFinalTCC_frontend.controller;
 
 import com.frontend.ProjetoFinalTCC_frontend.model.ManutencaoDTO;
 import com.frontend.ProjetoFinalTCC_frontend.model.ManutencaoDTO.StatusManutencao;
+import com.frontend.ProjetoFinalTCC_frontend.model.UsuarioDTO;
 import com.frontend.ProjetoFinalTCC_frontend.service.ManutencaoService;
 import com.frontend.ProjetoFinalTCC_frontend.service.VeiculoService;
+import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -25,25 +27,57 @@ public class ManutencaoController {
     @Autowired
     private VeiculoService veiculoService;
 
+    private boolean naoEhGestorOuAdmin(UsuarioDTO usuarioLogado) {
+        return usuarioLogado.getCargo() != UsuarioDTO.Cargo.GESTOR_FROTA && usuarioLogado.getCargo() != UsuarioDTO.Cargo.ADMIN;
+    }
+
     @GetMapping("/listar")
-    public String listarManutencoes(Model model) {
+    public String listarManutencoes(Model model, HttpSession session) {
+        UsuarioDTO usuarioLogado = (UsuarioDTO) session.getAttribute("usuario");
+
+        if (usuarioLogado == null) {
+            return "redirect:/login";
+        }
+
+        if (naoEhGestorOuAdmin(usuarioLogado)) {
+            return "redirect:/";
+        }
+
         model.addAttribute("manutencoes", manutencaoService.listarTodas());
         model.addAttribute("statusOptions", StatusManutencao.values()); // Alimenta o <select>
         return "listar-manutencoes";
     }
 
     @GetMapping("/cadastrar")
-    public String cadastrarManutencao(Model model) {
+    public String cadastrarManutencao(Model model, HttpSession session) {
+        UsuarioDTO usuarioLogado = (UsuarioDTO) session.getAttribute("usuario");
+
+        if (usuarioLogado == null) {
+            return "redirect:/login";
+        }
+
+        if (naoEhGestorOuAdmin(usuarioLogado)) {
+            return "redirect:/";
+        }
+
         model.addAttribute("manutencao", new ManutencaoDTO());
-        model.addAttribute("veiculosDisponiveis", veiculoService.listarTodos().stream()
-                .filter(v -> "DISPONIVEL".equalsIgnoreCase(v.getStatus().name()))
-                .toList());
+        model.addAttribute("veiculosDisponiveis", veiculoService.listarTodos());
         model.addAttribute("statusOptions", StatusManutencao.values());
         return "cadastrar-manutencoes";
     }
 
     @PostMapping("/salvar")
-    public String salvarManutencao(@ModelAttribute("manutencao") ManutencaoDTO manutencao, RedirectAttributes redirectAttributes) {
+    public String salvarManutencao(@ModelAttribute("manutencao") ManutencaoDTO manutencao, HttpSession session, RedirectAttributes redirectAttributes) {
+        UsuarioDTO usuarioLogado = (UsuarioDTO) session.getAttribute("usuario");
+
+        if (usuarioLogado == null) {
+            return "redirect:/login";
+        }
+
+        if (naoEhGestorOuAdmin(usuarioLogado)) {
+            return "redirect:/";
+        }
+
         try {
             manutencaoService.salvar(manutencao);
             redirectAttributes.addFlashAttribute("mensagemSucesso", "Manutenção salva com sucesso!");
@@ -56,7 +90,18 @@ public class ManutencaoController {
     @PostMapping("/alterar-status")
     public String alterarStatus(@RequestParam("idManutencao") Integer idManutencao,
                                 @RequestParam("novoStatus") StatusManutencao novoStatus,
+                                HttpSession session,
                                 RedirectAttributes redirectAttributes) {
+        UsuarioDTO usuarioLogado = (UsuarioDTO) session.getAttribute("usuario");
+
+        if (usuarioLogado == null) {
+            return "redirect:/login";
+        }
+
+        if (naoEhGestorOuAdmin(usuarioLogado)) {
+            return "redirect:/";
+        }
+
         try {
             manutencaoService.alterarStatus(idManutencao, novoStatus);
             redirectAttributes.addFlashAttribute("mensagemSucesso", "Status alterado com sucesso!");
@@ -67,7 +112,17 @@ public class ManutencaoController {
     }
 
     @GetMapping("/editar/{id}")
-    public String editarManutencao(@PathVariable Integer id, Model model, RedirectAttributes redirectAttributes) {
+    public String editarManutencao(@PathVariable Integer id, Model model, HttpSession session, RedirectAttributes redirectAttributes) {
+        UsuarioDTO usuarioLogado = (UsuarioDTO) session.getAttribute("usuario");
+
+        if (usuarioLogado == null) {
+            return "redirect:/login";
+        }
+
+        if (naoEhGestorOuAdmin(usuarioLogado)) {
+            return "redirect:/";
+        }
+
         try {
             ManutencaoDTO manutencao = manutencaoService.buscarPorId(id);
 
@@ -94,7 +149,17 @@ public class ManutencaoController {
     }
 
     @GetMapping("/deletar/{id}")
-    public String deletarManutencao(@PathVariable Integer id, RedirectAttributes redirectAttributes) {
+    public String deletarManutencao(@PathVariable Integer id, HttpSession session, RedirectAttributes redirectAttributes) {
+        UsuarioDTO usuarioLogado = (UsuarioDTO) session.getAttribute("usuario");
+
+        if (usuarioLogado == null) {
+            return "redirect:/login";
+        }
+
+        if (naoEhGestorOuAdmin(usuarioLogado)) {
+            return "redirect:/";
+        }
+
         try {
             manutencaoService.deletar(id);
             redirectAttributes.addFlashAttribute("mensagemSucesso", "Manutenção excluída com sucesso!");

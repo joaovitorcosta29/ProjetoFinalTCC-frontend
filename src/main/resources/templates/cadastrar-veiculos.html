@@ -2,72 +2,64 @@
 <html xmlns:th="http://www.thymeleaf.org">
     <head>
         <meta charset="UTF-8">
-        <title>Cadastrar Viagem - Sistema de Viagens</title>
+        <title>Cadastrar Veículo - Sistema de Frota</title>
         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css">
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
     </head>
     <body class="bg-light">
 
         <div th:replace="~{fragments/navbar :: navbar}"></div>
-        
-        <div class="container pb-5">
 
-        <div th:if="${mensagemSucesso}" class="alert alert-success alert-dismissible fade show" role="alert">
-            <span th:text="${mensagemSucesso}"></span>
-            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-        </div>
-        <div th:if="${mensagemErro}" class="alert alert-danger alert-dismissible fade show" role="alert">
-            <span th:text="${mensagemErro}"></span>
-            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-        </div>
+        <div class="container my-5">
+            <div class="row justify-content-center">
+                <div class="col-md-6">
+                    <div th:if="${mensagemSucesso}" class="alert alert-success alert-dismissible fade show shadow-sm" role="alert">
+                        <i class="bi bi-check-circle-fill me-2"></i><span th:text="${mensagemSucesso}"></span>
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
 
-        <div class="card shadow-sm mb-4">
-            <div class="card-header bg-primary text-white">
-                <h5 class="card-title mb-0">Cadastrar Novo Veículo</h5>
-            </div>
-            <div class="card-body">
-                <form th:action="@{/veiculos/cadastrar}" th:object="${veiculo}" method="post" class="row g-3">
-                    <div class="col-md-3">
-                        <label class="form-label fw-bold">Placa</label>
-                        <input type="text" th:field="*{placa}" class="form-control" placeholder="ABC-1234" minlength="8" maxlength="8" style="text-transform: uppercase;" required>
+                    <div th:if="${mensagemErro}" class="alert alert-danger alert-dismissible fade show shadow-sm" role="alert">
+                        <i class="bi bi-exclamation-triangle-fill me-2"></i><span th:text="${mensagemErro}"></span>
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                     </div>
-                    <div class="col-md-3">
-                        <label class="form-label fw-bold">Modelo</label>
-                        <input type="text" th:field="*{modelo}" class="form-control" placeholder="Ex: Torino" required>
+
+                    <div class="card shadow-sm border-0 rounded-3">
+                        <div class="card-body p-4">
+                            <h3 class="card-title fw-bold text-center mb-4 text-primary">Cadastrar Novo Veículo</h3>
+
+                            <form th:action="@{/veiculos/cadastrar}" th:object="${veiculo}" method="post">
+
+                                <div class="row">
+                                    <div class="col-md-6 mb-3">
+                                        <label for="placa" class="form-label">Placa</label>
+                                        <input type="text" id="placa" th:field="*{placa}" class="form-control" placeholder="ABC-1234" minlength="8" maxlength="8" style="text-transform: uppercase;" required>
+                                    </div>
+                                    <div class="col-md-6 mb-3">
+                                        <label for="modelo" class="form-label">Modelo</label>
+                                        <input type="text" id="modelo" th:field="*{modelo}" class="form-control" placeholder="Ex: Torino" required>
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-md-6 mb-3">
+                                        <label for="anoFabricacao" class="form-label">Ano de Fabricação</label>
+                                        <input type="number" id="anoFabricacao" th:field="*{anoFabricacao}" class="form-control" placeholder="2022" required>
+                                    </div>
+                                    <div class="col-md-6 mb-3">
+                                        <label for="kmAtual" class="form-label">KM Atual</label>
+                                        <input type="number" step="0.1" id="kmAtual" th:field="*{kmAtual}" class="form-control" placeholder="0.0" required>
+                                    </div>
+                                </div>
+
+                                <div class="d-grid gap-2 mt-4">
+                                    <button type="submit" class="btn btn-primary btn-lg">Cadastrar Veículo</button>
+                                    <a th:href="@{/veiculos/listar}" class="btn btn-outline-secondary">Ver veículos cadastrados</a>
+                                </div>
+
+                            </form>
+                        </div>
                     </div>
-                    <div class="col-md-2">
-                        <label class="form-label fw-bold">Ano</label>
-                        <input type="number" th:field="*{anoFabricacao}" class="form-control" placeholder="2022" required>
-                    </div>
-                    <div class="col-md-2">
-                        <label class="form-label fw-bold">KM Atual</label>
-                        <input type="number" step="0.1" th:field="*{kmAtual}" class="form-control" placeholder="0.0" required>
-                    </div>
-                    <div class="col-md-2">
-                        <label class="form-label fw-bold">KM Últ. Manutenção</label>
-                        <input type="number" step="0.1" th:field="*{kmUltimaManutencao}" class="form-control" placeholder="0.0" required>
-                    </div>
-                    <div class="col-md-4">
-                        <label class="form-label fw-bold">Status Inicial</label>
-                        <select th:field="*{status}" class="form-select" required>
-                            <option value="" disabled selected>Selecione um status...</option>
-                            <option th:each="s : ${statuses}" 
-                                    th:value="${s}" 
-                                    th:text="${s}"></option>
-                        </select>
-                    </div>
-                    <div class="col-md-4">
-                        <label class="form-label fw-bold">Alerta de Manutenção</label>
-                        <select th:field="*{alertaManutencao}" class="form-select" required>
-                            <option value="" disabled selected>Selecione...</option>
-                            <option th:each="a : ${alertaOptions}" 
-                                    th:value="${a}" 
-                                    th:text="${a}"></option>
-                        </select>
-                    </div>
-                    <div class="col-12 text-end">
-                        <button type="submit" class="btn btn-success px-4 fw-bold">Salvar Veículo</button>
-                    </div>
-                </form>
+                </div>
             </div>
         </div>
 

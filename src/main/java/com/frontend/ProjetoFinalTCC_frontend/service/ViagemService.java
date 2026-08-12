@@ -25,6 +25,8 @@ public class ViagemService {
                 .build();
     }
 
+    // Extrai a mensagem de erro real enviada pelo backend. Alguns endpoints devolvem
+    // um JSON padrão do Spring (campo "message"), outros devolvem o corpo como texto puro.
     private String extrairMensagemErro(HttpStatusCodeException e) {
         String corpo = e.getResponseBodyAsString();
 
@@ -35,6 +37,7 @@ public class ViagemService {
                     return node.get("message").asText();
                 }
             } catch (Exception ignored) {
+                // corpo não é JSON -> é texto puro, usa como está
                 return corpo;
             }
             return corpo;
@@ -100,6 +103,25 @@ public class ViagemService {
             restClient.post()
                     .uri(uriBuilder -> uriBuilder
                             .path("/viagens/assumir")
+                            .queryParam("idViagem", idViagem)
+                            .queryParam("idUsuario", idUsuario)
+                            .build())
+                    .retrieve()
+                    .toBodilessEntity();
+        } catch (HttpStatusCodeException e) {
+            throw new RuntimeException(extrairMensagemErro(e));
+        }
+    }
+
+    public void cancelarViagem(Long idViagem, Integer idUsuario) {
+        if (idViagem == null || idUsuario == null) {
+            throw new IllegalArgumentException("Viagem ou usuário inválido para cancelar a viagem.");
+        }
+
+        try {
+            restClient.post()
+                    .uri(uriBuilder -> uriBuilder
+                            .path("/viagens/cancelar")
                             .queryParam("idViagem", idViagem)
                             .queryParam("idUsuario", idUsuario)
                             .build())

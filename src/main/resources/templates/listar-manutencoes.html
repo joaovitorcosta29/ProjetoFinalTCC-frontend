@@ -65,7 +65,8 @@
                                         <span th:if="${m.statusManutencao.name() == 'CANCELADA'}" class="badge bg-danger">CANCELADA</span>
                                     </td>
                                     <td>
-                                        <form th:action="@{/manutencoes/alterar-status}" method="post" class="d-flex align-items-center gap-2">
+                                        <form th:if="${m.statusManutencao.name() != 'CONCLUIDA' and m.statusManutencao.name() != 'CANCELADA'}"
+                                              th:action="@{/manutencoes/alterar-status}" method="post" class="d-flex align-items-center gap-2">
                                             <input type="hidden" name="idManutencao" th:value="${m.idManutencao}">
                                             <select name="novoStatus" class="form-select form-select-sm w-auto" required>
                                                 <option value="" disabled selected>Mudar para...</option>
@@ -76,6 +77,9 @@
                                             </select>
                                             <button type="submit" class="btn btn-sm btn-outline-primary">Alterar</button>
                                         </form>
+                                        <span th:if="${m.statusManutencao.name() == 'CONCLUIDA' or m.statusManutencao.name() == 'CANCELADA'}" class="text-muted small">
+                                            <i class="bi bi-lock-fill me-1"></i> Status final
+                                        </span>
                                     </td>
                                     <td class="text-end pe-3" th:if="${session.usuario != null and (session.usuario.cargo.name() == 'GESTOR_FROTA' or session.usuario.cargo.name() == 'ADMIN')}">
                                         <a th:if="${m.statusManutencao != null and m.statusManutencao.name() == 'PENDENTE'}"

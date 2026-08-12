@@ -12,15 +12,11 @@
 
     <div class="container my-5" style="max-width: 650px;">
         <div class="card shadow-sm">
-            <div class="card-header bg-primary text-white d-flex align-items-center justify-content-between">
+            <div class="card-header bg-primary text-white">
                 <h4 class="mb-0 fs-5"><i class="bi bi-pencil-square me-2"></i>Editar Viagem</h4>
-                <a th:href="@{/viagens/listar}" class="btn btn-sm btn-outline-light">
-                    <i class="bi bi-arrow-left me-1"></i> Voltar
-                </a>
             </div>
             <div class="card-body p-4">
 
-                <!-- Alerta de Erro -->
                 <div th:if="${mensagemErro}" class="alert alert-danger alert-dismissible fade show" role="alert">
                     <i class="bi bi-exclamation-triangle-fill me-2"></i><span th:text="${mensagemErro}"></span>
                     <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
@@ -32,7 +28,7 @@
 
                     <div class="row g-3">
                         <!-- Veículo -->
-                        <div class="col-md-6">
+                        <div class="col-12">
                             <label for="idVeiculo" class="form-label fw-semibold">Veículo</label>
                             <select id="idVeiculo" class="form-select" th:field="*{idVeiculo}" required>
                                 <option value="" disabled>Selecione um veículo...</option>
@@ -41,12 +37,6 @@
                                         th:text="${veiculo.idVeiculo + ' - ' + veiculo.placa + ' (' + veiculo.modelo + ')'}">
                                 </option>
                             </select>
-                        </div>
-
-                        <!-- ID Usuário -->
-                        <div class="col-md-6">
-                            <label for="idUsuario" class="form-label fw-semibold">ID Usuário</label>
-                            <input type="number" id="idUsuario" class="form-control" th:field="*{idUsuario}" placeholder="Ex: 1">
                         </div>
 
                         <!-- Cidade Destino -->
@@ -67,32 +57,13 @@
                             </select>
                         </div>
 
-                        <!-- KM Inicial -->
-                        <div class="col-md-6">
-                            <label for="kmInicial" class="form-label fw-semibold">KM Inicial</label>
-                            <input type="number" step="0.1" id="kmInicial" class="form-control" th:field="*{kmInicial}" required placeholder="Ex: 15000.0">
-                        </div>
-
-                        <!-- KM Final -->
-                        <div class="col-md-6">
-                            <label for="kmFinal" class="form-label fw-semibold">KM Final</label>
-                            <input type="number" step="0.1" id="kmFinal" class="form-control" th:field="*{kmFinal}" placeholder="Ex: 15200.0">
-                        </div>
-
-                        <!-- Status da Viagem -->
-                        <div class="col-md-6">
-                            <label for="statusViagem" class="form-label fw-semibold">Status da Viagem</label>
-                            <select id="statusViagem" class="form-select" th:field="*{statusViagem}" required>
-                                <option value="" disabled>Selecione um status...</option>
-                                <option th:each="st : ${statusOptions}"
-                                        th:value="${st}"
-                                        th:text="${st}">
-                                </option>
-                            </select>
+                        <!-- Status da Viagem (somente leitura) -->
+                        <div class="col-12">
+                            <label class="form-label fw-semibold">Status da Viagem</label>
+                            <input type="text" class="form-control" th:value="${viagem.statusViagem}" disabled readonly>
                         </div>
                     </div>
 
-                    <!-- Botões de Ação -->
                     <div class="d-flex justify-content-end gap-2 mt-4">
                         <a th:href="@{/viagens/listar}" class="btn btn-outline-primary">Cancelar</a>
                         <button type="submit" class="btn btn-primary">
