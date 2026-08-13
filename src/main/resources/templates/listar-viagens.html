@@ -23,13 +23,11 @@
                 </a>
             </div>
 
-            <!-- Alerta de Sucesso -->
             <div th:if="${mensagemSucesso}" class="alert alert-success alert-dismissible fade show" role="alert">
                 <i class="bi bi-check-circle-fill me-2"></i><span th:text="${mensagemSucesso}"></span>
                 <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
             </div>
 
-            <!-- Alerta de Erro -->
             <div th:if="${mensagemErro}" class="alert alert-danger alert-dismissible fade show" role="alert">
                 <i class="bi bi-exclamation-triangle-fill me-2"></i><span th:text="${mensagemErro}"></span>
                 <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
@@ -59,7 +57,7 @@
                             <tbody>
                                 <tr th:each="v : ${viagens}">
                                     <td class="fw-bold" th:text="${v.idViagem != null ? '#' + v.idViagem : '-'}"></td>
-                                    <td th:text="${v.idUsuario != null ? v.idUsuario : 'Não atribuído'}"></td>
+                                    <td th:text="${v.idUsuario != null ? v.idUsuario : 'Aguardando Motorista'}"></td>
                                     <td th:text="${v.idVeiculo}"></td>
                                     <td th:text="${v.cidadeDestino}"></td>
                                     <td th:text="${v.estadoDestino}"></td>

@@ -33,7 +33,6 @@
                                 <input type="hidden" th:field="*{idManutencao}" />
                                 <input type="hidden" th:field="*{statusManutencao}" />
 
-                                <!-- Seleção do Veículo Disponível -->
                                 <div class="mb-3">
                                     <label for="idVeiculo" class="form-label fw-bold">Veículo</label>
                                     <select id="idVeiculo" class="form-select" th:field="*{idVeiculo}" required>
@@ -45,14 +44,12 @@
                                     </select>
                                 </div>
 
-                                <!-- Descrição da Manutenção -->
                                 <div class="mb-3">
                                     <label for="descricao" class="form-label fw-bold">Descrição do Serviço</label>
                                     <textarea id="descricao" th:field="*{descricao}" class="form-control" rows="3" 
                                               placeholder="Descreva detalhadamente o serviço ou motivo da manutenção..." required></textarea>
                                 </div>
 
-                                <!-- Botões de Ação -->
                                 <div class="d-grid gap-2 mt-4">
                                     <button type="submit" class="btn btn-primary btn-lg fw-bold">Salvar Manutenção</button>
                                     <a th:href="@{/manutencoes/listar}" class="btn btn-outline-secondary">Ver manutenções cadastradas</a>

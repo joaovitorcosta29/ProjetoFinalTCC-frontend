@@ -17,7 +17,6 @@
                     <h2 class="fw-bold text-dark mb-0">Veículos Cadastrados</h2>
                 </div>
                 
-                <!-- Botão de Cadastro -->
                 <div th:if="${session.usuario != null and (session.usuario.cargo.name() == 'GESTOR_FROTA' or session.usuario.cargo.name() == 'ADMIN')}">
                     <a th:href="@{/veiculos/cadastrar}" class="btn btn-primary shadow-sm">
                         <i class="bi bi-plus-circle me-1"></i> Cadastrar Veículo
@@ -25,7 +24,6 @@
                 </div>
             </div>
 
-            <!-- Mensagens de Alerta -->
             <div th:if="${mensagemSucesso}" class="alert alert-success alert-dismissible fade show shadow-sm" role="alert">
                 <i class="bi bi-check-circle-fill me-2"></i><span th:text="${mensagemSucesso}"></span>
                 <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
@@ -75,7 +73,6 @@
                                         <span th:if="${v.alertaManutencao != null and v.alertaManutencao.name() == 'REVISAO_NECESSARIA'}" class="badge bg-danger">REVISÃO NECESSÁRIA</span>
                                         <span th:if="${v.alertaManutencao == null}" class="text-muted">-</span>
                                     </td>
-                                    <!-- Botão de Editar-->
                                     <td class="text-center" th:if="${session.usuario != null and (session.usuario.cargo.name() == 'GESTOR_FROTA' or session.usuario.cargo.name() == 'ADMIN')}">
                                         <a th:if="${v.status.name() != 'EM_USO'}"
                                            th:href="@{/veiculos/editar/{id}(id=${v.idVeiculo})}" class="btn btn-sm btn-outline-primary shadow-sm">

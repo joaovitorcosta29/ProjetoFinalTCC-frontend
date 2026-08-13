@@ -8,7 +8,6 @@
 </head>
 <body class="bg-light">
 
-    <!-- Navbar Reutilizável -->
     <div th:replace="~{fragments/navbar :: navbar}"></div>
 
     <div class="container my-5" style="max-width: 550px;">
@@ -21,7 +20,6 @@
             <div class="card-body p-4">
                 
                 <form th:action="@{/viagens/finalizar}" method="post">
-                    <!-- ID da viagem oculto -->
                     <input type="hidden" name="idViagem" th:value="${viagem.idViagem}" />
 
                     <div class="mb-3">
@@ -34,7 +32,6 @@
                         <input type="text" class="form-control bg-light" th:value="${viagem.kmInicial}" disabled />
                     </div>
 
-                    <!-- Input do KM Final -->
                     <div class="mb-4">
                         <label for="kmFinal" class="form-label fw-semibold">KM Final Registrado <span class="text-danger">*</span></label>
                         <input type="number" 

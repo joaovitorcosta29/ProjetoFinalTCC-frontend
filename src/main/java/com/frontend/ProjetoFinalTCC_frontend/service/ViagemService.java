@@ -5,7 +5,6 @@ import com.frontend.ProjetoFinalTCC_frontend.model.ViagemDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpStatusCodeException;
-
 import java.util.Arrays;
 import java.util.List;
 import org.springframework.web.client.RestClient;
@@ -25,8 +24,6 @@ public class ViagemService {
                 .build();
     }
 
-    // Extrai a mensagem de erro real enviada pelo backend. Alguns endpoints devolvem
-    // um JSON padrão do Spring (campo "message"), outros devolvem o corpo como texto puro.
     private String extrairMensagemErro(HttpStatusCodeException e) {
         String corpo = e.getResponseBodyAsString();
 
@@ -37,7 +34,6 @@ public class ViagemService {
                     return node.get("message").asText();
                 }
             } catch (Exception ignored) {
-                // corpo não é JSON -> é texto puro, usa como está
                 return corpo;
             }
             return corpo;
@@ -143,6 +139,6 @@ public class ViagemService {
                     .toBodilessEntity();
         } catch (HttpStatusCodeException e) {
             throw new RuntimeException(extrairMensagemErro(e));
-        }
+        } 
     }
 }

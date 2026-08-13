@@ -5,7 +5,7 @@
         <title>Gestão de Manutenções</title>
         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
-    </head>
+    </head> 
     <body class="bg-light">
         
         <div th:replace="~{fragments/navbar :: navbar}"></div>
@@ -33,12 +33,10 @@
                 <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
             </div>
 
-            <!-- Card com a Tabela -->
-            <div class="card shadow-sm border-0 rounded-3">
+            <div class="card shadow-sm border-0 rounded-3 mb-4">
                 <div class="card-header bg-primary text-white d-flex align-items-center">
                     <i class="bi bi-tools me-2"></i>
                     <span class="fw-semibold">Manutenções</span>
-                    <span class="badge bg-white text-primary ms-2" th:text="${#lists.size(manutencoes)}">0</span>
                 </div>
                 <div class="card-body p-0">
                     <div class="table-responsive">
@@ -54,19 +52,16 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                <tr th:each="m : ${manutencoes}">
+                                <tr th:each="m : ${manutencoes}" th:if="${m.statusManutencao.name() == 'PENDENTE' or m.statusManutencao.name() == 'EM_ANDAMENTO'}">
                                     <td th:text="${m.idManutencao}">1</td>
                                     <td><strong th:text="${'#' + m.idVeiculo}">#101</strong></td>
                                     <td th:text="${m.descricao}">Troca de óleo e filtros</td>
                                     <td>
                                         <span th:if="${m.statusManutencao.name() == 'PENDENTE'}" class="badge bg-secondary">PENDENTE</span>
                                         <span th:if="${m.statusManutencao.name() == 'EM_ANDAMENTO'}" class="badge bg-warning text-dark">EM ANDAMENTO</span>
-                                        <span th:if="${m.statusManutencao.name() == 'CONCLUIDA'}" class="badge bg-success">CONCLUÍDA</span>
-                                        <span th:if="${m.statusManutencao.name() == 'CANCELADA'}" class="badge bg-danger">CANCELADA</span>
                                     </td>
                                     <td>
-                                        <form th:if="${m.statusManutencao.name() != 'CONCLUIDA' and m.statusManutencao.name() != 'CANCELADA'}"
-                                              th:action="@{/manutencoes/alterar-status}" method="post" class="d-flex align-items-center gap-2">
+                                        <form th:action="@{/manutencoes/alterar-status}" method="post" class="d-flex align-items-center gap-2">
                                             <input type="hidden" name="idManutencao" th:value="${m.idManutencao}">
                                             <select name="novoStatus" class="form-select form-select-sm w-auto" required>
                                                 <option value="" disabled selected>Mudar para...</option>
@@ -77,12 +72,9 @@
                                             </select>
                                             <button type="submit" class="btn btn-sm btn-outline-primary">Alterar</button>
                                         </form>
-                                        <span th:if="${m.statusManutencao.name() == 'CONCLUIDA' or m.statusManutencao.name() == 'CANCELADA'}" class="text-muted small">
-                                            <i class="bi bi-lock-fill me-1"></i> Status final
-                                        </span>
                                     </td>
                                     <td class="text-end pe-3" th:if="${session.usuario != null and (session.usuario.cargo.name() == 'GESTOR_FROTA' or session.usuario.cargo.name() == 'ADMIN')}">
-                                        <a th:if="${m.statusManutencao != null and m.statusManutencao.name() == 'PENDENTE'}"
+                                        <a th:if="${m.statusManutencao.name() == 'PENDENTE'}"
                                            th:href="@{/manutencoes/editar/{id}(id=${m.idManutencao})}" class="btn btn-sm btn-outline-primary shadow-sm me-1">
                                             <i class="bi bi-pencil-square me-1"></i> Editar
                                         </a>
@@ -94,9 +86,78 @@
                                         </a>
                                     </td>
                                 </tr>
-                                <tr th:if="${#lists.isEmpty(manutencoes)}">
-                                    <td colspan="6" class="text-center py-4 text-muted">
-                                        Nenhuma manutenção registrada no sistema.
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div> 
+
+            <div class="card shadow-sm border-0 rounded-3 mb-4">
+                <div class="card-header bg-success text-white d-flex align-items-center">
+                    <i class="bi bi-check-circle-fill me-2"></i>
+                    <span class="fw-semibold">Manutenções Concluídas</span>
+                </div>
+                <div class="card-body p-0">
+                    <div class="table-responsive">
+                        <table class="table table-hover align-middle mb-0">
+                            <thead class="table-light">
+                                <tr>
+                                    <th>ID</th>
+                                    <th>ID Veículo</th>
+                                    <th>Descrição</th>
+                                    <th>Status Atual</th>
+                                    <th>Situação</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr th:each="m : ${manutencoes}" th:if="${m.statusManutencao.name() == 'CONCLUIDA'}">
+                                    <td th:text="${m.idManutencao}">1</td>
+                                    <td><strong th:text="${'#' + m.idVeiculo}">#101</strong></td>
+                                    <td th:text="${m.descricao}">Troca de óleo e filtros</td>
+                                    <td>
+                                        <span class="badge bg-success">CONCLUÍDA</span>
+                                    </td>
+                                    <td>
+                                        <span class="text-muted small">
+                                            <i class="bi bi-lock-fill me-1"></i> Status final
+                                        </span>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card shadow-sm border-0 rounded-3">
+                <div class="card-header bg-danger text-white d-flex align-items-center">
+                    <i class="bi bi-x-circle-fill me-2"></i>
+                    <span class="fw-semibold">Manutenções Canceladas</span>
+                </div>
+                <div class="card-body p-0">
+                    <div class="table-responsive">
+                        <table class="table table-hover align-middle mb-0">
+                            <thead class="table-light">
+                                <tr>
+                                    <th>ID</th>
+                                    <th>ID Veículo</th>
+                                    <th>Descrição</th>
+                                    <th>Status Atual</th>
+                                    <th>Situação</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr th:each="m : ${manutencoes}" th:if="${m.statusManutencao.name() == 'CANCELADA'}">
+                                    <td th:text="${m.idManutencao}">1</td>
+                                    <td><strong th:text="${'#' + m.idVeiculo}">#101</strong></td>
+                                    <td th:text="${m.descricao}">Troca de óleo e filtros</td>
+                                    <td>
+                                        <span class="badge bg-danger">CANCELADA</span>
+                                    </td>
+                                    <td>
+                                        <span class="text-muted small">
+                                            <i class="bi bi-lock-fill me-1"></i> Status final
+                                        </span>
                                     </td>
                                 </tr>
                             </tbody>

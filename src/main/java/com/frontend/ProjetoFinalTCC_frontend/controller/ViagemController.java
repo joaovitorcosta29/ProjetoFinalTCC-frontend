@@ -2,7 +2,7 @@ package com.frontend.ProjetoFinalTCC_frontend.controller;
 
 import com.frontend.ProjetoFinalTCC_frontend.model.UsuarioDTO;
 import com.frontend.ProjetoFinalTCC_frontend.model.VeiculoDTO;
-import com.frontend.ProjetoFinalTCC_frontend.model.VeiculoDTO.StatusVeiculo; // Import do Enum
+import com.frontend.ProjetoFinalTCC_frontend.model.VeiculoDTO.StatusVeiculo;
 import com.frontend.ProjetoFinalTCC_frontend.model.ViagemDTO;
 import com.frontend.ProjetoFinalTCC_frontend.service.VeiculoService;
 import com.frontend.ProjetoFinalTCC_frontend.service.ViagemService;
@@ -17,7 +17,7 @@ import java.util.List;
 
 @Controller
 @RequestMapping("/viagens")
-public class ViagemController {
+public class ViagemController { 
 
     @Autowired
     private ViagemService viagemService;
@@ -74,7 +74,6 @@ public class ViagemController {
             return "redirect:/login";
         }
 
-        // A listagem completa (todas as viagens, de todos os motoristas) é só para quem gerencia a frota.
         if (usuarioLogado.getCargo() == UsuarioDTO.Cargo.MOTORISTA) {
             return "redirect:/viagens/minhas-viagens";
         }
@@ -110,22 +109,18 @@ public class ViagemController {
         Integer meuId = usuarioLogado.getIdUsuario().intValue();
         List<ViagemDTO> todas = viagemService.listarTodas();
 
-        // Disponíveis: sem motorista vinculado ainda (qualquer motorista pode assumir).
         List<ViagemDTO> disponiveis = todas.stream()
                 .filter(v -> v.getIdUsuario() == null
                         && (v.getStatusViagem() == null || v.getStatusViagem() != ViagemDTO.StatusViagem.FINALIZADA))
                 .toList();
 
-        // Em andamento: assumidas por MIM e ainda não finalizadas.
         List<ViagemDTO> emAndamento = todas.stream()
                 .filter(v -> meuId.equals(v.getIdUsuario())
                         && (v.getStatusViagem() == null || v.getStatusViagem() != ViagemDTO.StatusViagem.FINALIZADA))
                 .toList();
 
-        // Um motorista só pode ter uma viagem em andamento por vez.
         boolean possuiViagemEmAndamento = !emAndamento.isEmpty();
 
-        // Concluídas: finalizadas por MIM. Viagens de outros motoristas nunca aparecem aqui.
         List<ViagemDTO> concluidas = todas.stream()
                 .filter(v -> meuId.equals(v.getIdUsuario())
                         && v.getStatusViagem() == ViagemDTO.StatusViagem.FINALIZADA)
@@ -204,8 +199,6 @@ public class ViagemController {
         return "redirect:/viagens/listar";
     }
 
-    // Depois de ações do motorista (assumir/finalizar), ele volta para a tela dele;
-    // gestor/admin voltam para a listagem completa.
     private String redirectPosAcao(UsuarioDTO usuarioLogado) {
         if (usuarioLogado.getCargo() == UsuarioDTO.Cargo.MOTORISTA) {
             return "redirect:/viagens/minhas-viagens";
@@ -302,7 +295,7 @@ public class ViagemController {
             return "redirect:/login";
         }
 
-        try {
+        try { 
             viagemService.finalizarViagem(idViagem, kmFinal);
             redirect.addFlashAttribute("mensagemSucesso", "Viagem finalizada com sucesso! O veículo já está disponível novamente.");
         } catch (Exception e) {

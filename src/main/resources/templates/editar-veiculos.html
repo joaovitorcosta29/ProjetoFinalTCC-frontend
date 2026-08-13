@@ -27,51 +27,39 @@
                     <input type="hidden" th:field="*{idVeiculo}" />
 
                     <div class="row g-3">
-                        <!-- Placa -->
                         <div class="col-md-6">
                             <label for="placa" class="form-label fw-semibold">Placa</label>
                             <input type="text" id="placa" class="form-control" th:field="*{placa}" required placeholder="Ex: ABC-1234" minlength="8" maxlength="8" style="text-transform: uppercase;">
                         </div>
 
-                        <!-- Modelo -->
                         <div class="col-md-6">
                             <label for="modelo" class="form-label fw-semibold">Modelo</label>
                             <input type="text" id="modelo" class="form-control" th:field="*{modelo}" required placeholder="Ex: Torino">
                         </div>
 
-                        <!-- Ano de Fabricação -->
                         <div class="col-md-6">
                             <label for="anoFabricacao" class="form-label fw-semibold">Ano de Fabricação</label>
                             <input type="number" id="anoFabricacao" class="form-control" th:field="*{anoFabricacao}" required placeholder="Ex: 2022">
                         </div>
 
-                        <!-- KM Atual -->
                         <div class="col-md-6">
                             <label for="kmAtual" class="form-label fw-semibold">KM Atual</label>
                             <input type="number" step="0.1" id="kmAtual" class="form-control" th:field="*{kmAtual}" required placeholder="Ex: 15000.0">
                         </div>
 
-                        <!-- KM Última Manutenção (somente leitura) -->
                         <div class="col-md-6">
                             <label class="form-label fw-semibold">KM Última Manutenção</label>
                             <input type="text" class="form-control" th:value="${veiculo.kmUltimaManutencao}" disabled readonly>
-                            <div class="form-text">Atualizado automaticamente quando uma manutenção é concluída.</div>
                         </div>
 
-                        <!-- Status do Veículo (somente leitura) -->
                         <div class="col-md-6">
                             <label class="form-label fw-semibold">Status do Veículo</label>
                             <input type="text" class="form-control" th:value="${veiculo.status}" disabled readonly>
                         </div>
 
-                        <!-- Alerta de Manutenção (somente leitura, centralizado) -->
                         <div class="col-12">
-                            <label class="form-label fw-semibold d-block">Alerta de Manutenção</label>
-                            <div class="d-flex justify-content-center">
-                                <span th:if="${veiculo.alertaManutencao != null and veiculo.alertaManutencao.name() == 'OK'}" class="badge bg-success fs-6 px-3 py-2">OK</span>
-                                <span th:if="${veiculo.alertaManutencao != null and veiculo.alertaManutencao.name() == 'REVISAO_NECESSARIA'}" class="badge bg-danger fs-6 px-3 py-2">REVISÃO NECESSÁRIA</span>
-                            </div>
-                            <div class="form-text text-center">Calculado automaticamente com base na quilometragem rodada desde a última manutenção.</div>
+                            <label class="form-label fw-semibold">Alerta de Manutenção</label>
+                            <input type="text" class="form-control" th:value="${veiculo.alertaManutencao}" disabled readonly>
                         </div>
                     </div>
 

@@ -69,7 +69,7 @@ public class UsuarioService {
             loginDados.setEmail(email);
             loginDados.setSenha(senha);
             return logar(loginDados);
-        } catch (Exception e) {
+        } catch (Exception e) { 
             return null;
         }
     }

@@ -27,7 +27,6 @@
                     <input type="hidden" th:field="*{idViagem}" />
 
                     <div class="row g-3">
-                        <!-- Veículo -->
                         <div class="col-12">
                             <label for="idVeiculo" class="form-label fw-semibold">Veículo</label>
                             <select id="idVeiculo" class="form-select" th:field="*{idVeiculo}" required>
@@ -39,13 +38,11 @@
                             </select>
                         </div>
 
-                        <!-- Cidade Destino -->
                         <div class="col-md-8">
                             <label for="cidadeDestino" class="form-label fw-semibold">Cidade de Destino</label>
                             <input type="text" id="cidadeDestino" class="form-control" th:field="*{cidadeDestino}" required placeholder="Ex: Londrina">
                         </div>
 
-                        <!-- UF -->
                         <div class="col-md-4">
                             <label for="estadoDestino" class="form-label fw-semibold">UF</label>
                             <select id="estadoDestino" class="form-select" th:field="*{estadoDestino}" required>
@@ -57,7 +54,6 @@
                             </select>
                         </div>
 
-                        <!-- Status da Viagem (somente leitura) -->
                         <div class="col-12">
                             <label class="form-label fw-semibold">Status da Viagem</label>
                             <input type="text" class="form-control" th:value="${viagem.statusViagem}" disabled readonly>
